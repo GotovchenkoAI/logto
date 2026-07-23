@@ -5,19 +5,58 @@
   position: absolute;
   inset: 0;
   overflow: auto;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(113, 75, 204, 18%), transparent 32%),
+    radial-gradient(circle at 70% 105%, rgba(86, 57, 143, 14%), transparent 38%),
+    #0b0910;
 }
 
 .container {
   min-height: 100%;
-  @include _.flex_column(center, center);
+  @include _.flex-row;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(44px, 7vw, 96px);
+}
+
+.brandColumn {
+  flex: 0 1 auto;
 }
 
 .main {
   @include _.flex_column;
+  --color-type-primary: #f5f2fb;
+  --color-type-secondary: #9f99ad;
+  --color-type-disable: rgba(245, 242, 251, 35%);
+  --color-type-link: #c2adff;
+  --color-line-divider: rgba(245, 242, 251, 11%);
+  --color-line-border: #50495c;
+  --color-line-border-transparent: rgba(245, 242, 251, 18%);
+  --color-bg-body: #15121b;
+  --color-bg-float: #15121b;
+  --color-bg-float-overlay: #1d1925;
+  --color-bg-layer-1: #1d1925;
+  --color-bg-layer-2: #24202c;
+  --color-bg-state-unselected: #2b2634;
+  --color-bg-state-disabled: rgba(245, 242, 251, 9%);
+  --color-brand-default: #aa8df8;
+  --color-brand-hover: #baa2ff;
+  --color-brand-pressed: #9675ee;
+  --color-brand-loading: #8c6ce1;
 }
 
 :global(body.mobile) {
+  .viewBox {
+    background: #0b0910;
+  }
+
   .container {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
     padding-bottom: env(safe-area-inset-bottom);
   }
 
@@ -26,41 +65,37 @@
     align-self: stretch;
     padding: _.unit(4) _.unit(5);
     position: relative;
-    background: var(--color-bg-body);
-  }
-
-  .signature {
-    margin: _.unit(10) 0 _.unit(2);
+    background: transparent;
   }
 }
 
 :global(body.desktop) {
   .container {
-    padding: _.unit(5);
+    padding: 40px;
   }
 
   .main {
-    width: 540px;
+    width: 480px;
     min-height: 540px;
     position: relative;
-    padding: _.unit(6);
-    border-radius: 16px;
-    background: var(--color-bg-float);
-    box-shadow: var(--color-shadow-2);
-  }
-
-  .signature {
-    position: absolute;
-    bottom: 0;
-    transform: translateY(calc(100% + _.unit(7)));
-    // Have to use padding instead of margin. Overflow margin spacing will be ignored by the browser.
-    padding-bottom: _.unit(7);
+    padding: 40px;
+    border: 1px solid rgba(238, 229, 255, 9%);
+    border-radius: 28px;
+    background: rgba(21, 18, 27, 94%);
+    box-shadow: 0 30px 90px rgba(0, 0, 0, 34%);
+    backdrop-filter: blur(24px);
   }
 
   @media only screen and (max-width: 580px) {
     .main {
       align-self: stretch;
       width: auto;
+    }
+  }
+
+  @media only screen and (max-width: 960px) {
+    .brandColumn {
+      display: none;
     }
   }
 }

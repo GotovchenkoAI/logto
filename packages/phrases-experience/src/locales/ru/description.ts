@@ -13,10 +13,10 @@ const description = {
   switch_account: 'Сменить аккаунт',
   or: 'или',
   and: 'и',
-  enter_passcode: 'Код подтверждения был отправлен на {{address}}',
-  passcode_sent: 'Код подтверждения был отправлен повторно',
-  resend_after_seconds: 'Еще не получили? Отправить повторно через <span>{{seconds}}</span> секунд',
-  resend_passcode: 'Еще не получили? <a>Отправить повторно код подтверждения</a>',
+  enter_passcode: 'Отправили код на {{address}}',
+  passcode_sent: 'Отправили новый код',
+  resend_after_seconds: 'Новый код можно отправить через <span>{{seconds}}</span> секунд',
+  resend_passcode: 'Не пришло письмо? <a>Отправить новый код</a>',
   create_account_id_exists: 'Учетная запись {{value}} уже существует. Продолжить вход.',
   link_account_id_exists: 'Учетная запись для {{value}} уже существует, хотите привязать?',
   sign_in_id_does_not_exist: 'Учетная запись для {{value}} не найдена. Создать новую?',
@@ -59,8 +59,8 @@ const description = {
     'Для дополнительной безопасности, пожалуйста, привяжите свою электронную почту или номер телефона к учетной записи.',
   continue_with_more_information:
     'Для дополнительной безопасности, пожалуйста, заполните приведенные ниже данные учетной записи.',
-  create_your_account: 'Создайте свой аккаунт',
-  sign_in_to_your_account: 'Войди в свой аккаунт',
+  create_your_account: 'Создайте пространство в Djinn',
+  sign_in_to_your_account: 'Войдите в Djinn',
   device_activation: 'Активация устройства',
   device_activation_description:
     'Введите код, отображённый на вашем устройстве. Убедитесь, что он совпадает, затем продолжите вход на этом устройстве.',
@@ -117,7 +117,8 @@ const description = {
   user_id: 'ID пользователя: {{id}}',
   redirect_to: 'Вы будете перенаправлены на {{name}}.',
   auto_agreement: 'Продолжая, вы соглашаетесь с <link></link>.',
-  identifier_sign_in_description: 'Введите свои {{types, list(type: disjunction;)}} для входа.',
+  identifier_sign_in_description:
+    'Введите email — пришлём один код для входа или создания аккаунта.',
   all_sign_in_options: 'Все варианты входа',
   identifier_register_description:
     'Введите свои {{types, list(type: disjunction;)}} чтобы создать новую учётную запись.',

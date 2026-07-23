@@ -1,0 +1,25 @@
+# syntax=docker/dockerfile:1.7
+
+ARG LOGTO_BASE_IMAGE
+FROM node:22-alpine AS experience-builder
+WORKDIR /src/logto
+ENV CI=true
+ENV PUPPETEER_SKIP_DOWNLOAD=true
+
+RUN apk add --no-cache python3 make g++ rsync \
+  && corepack enable \
+  && corepack prepare pnpm@10.28.2 --activate
+
+COPY . .
+RUN --mount=type=cache,id=djinn-logto-pnpm,target=/root/.local/share/pnpm/store \
+  pnpm install --frozen-lockfile
+RUN pnpm --filter @logto/experience... build
+
+# The final runtime stays the exact official Logto release. Only the compiled Experience bundle
+# and its user-facing phrase pack are overlaid, so this fork cannot accidentally replace the
+# provider's protocol/session engine.
+FROM ${LOGTO_BASE_IMAGE}
+COPY --from=experience-builder /src/logto/packages/experience/dist \
+  /etc/logto/packages/experience/dist
+COPY --from=experience-builder /src/logto/packages/phrases-experience/lib \
+  /etc/logto/packages/phrases-experience/lib

@@ -1,0 +1,114 @@
+@use '@/shared/scss/underscore' as _;
+
+.panel {
+  width: min(43vw, 470px);
+  min-height: 540px;
+  padding: 38px 12px 30px;
+  display: flex;
+  flex-direction: column;
+  color: #f8f5ff;
+}
+
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 26px;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+
+.mark {
+  width: 38px;
+  height: 38px;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #c2adff;
+  box-shadow: 0 10px 40px rgba(150, 115, 255, 35%);
+}
+
+.stroke {
+  position: absolute;
+  width: 19px;
+  height: 5px;
+  border-radius: 999px;
+  background: #17121e;
+
+  &:last-child {
+    transform: rotate(90deg);
+  }
+}
+
+.promise {
+  margin-block: auto;
+  max-width: 430px;
+
+  h1 {
+    margin: 20px 0 22px;
+    font-size: clamp(42px, 4.2vw, 62px);
+    line-height: 0.98;
+    letter-spacing: -0.06em;
+    font-weight: 560;
+
+    em {
+      color: #c2adff;
+      font-style: normal;
+    }
+  }
+
+  p {
+    max-width: 390px;
+    margin: 0;
+    color: rgba(245, 240, 255, 68%);
+    font-size: 17px;
+    line-height: 1.55;
+  }
+}
+
+.eyebrow {
+  color: rgba(245, 240, 255, 52%);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.trust {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(245, 240, 255, 55%);
+  font-size: 13px;
+}
+
+.trustDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #65d6a6;
+  box-shadow: 0 0 0 5px rgba(101, 214, 166, 10%);
+}
+
+:global(body.mobile) {
+  .panel {
+    width: auto;
+    min-height: auto;
+    padding: 24px 20px 8px;
+  }
+
+  .wordmark {
+    font-size: 22px;
+  }
+
+  .mark {
+    width: 34px;
+    height: 34px;
+  }
+
+  .promise,
+  .trust {
+    display: none;
+  }
+}

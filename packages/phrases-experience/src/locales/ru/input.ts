@@ -1,12 +1,12 @@
 const input = {
   username: 'Имя пользователя',
   password: 'Пароль',
-  email: 'Электронная почта',
+  email: 'Ваш email',
   phone_number: 'Номер телефона',
   confirm_password: 'Подтверждение пароля',
   search_region_code: 'Поиск кода региона',
   backup_code: 'Резервный код',
-  code: 'Код',
+  code: 'Код из письма',
   label_with_optional: '{{label}} (Необязательно)',
 };
 

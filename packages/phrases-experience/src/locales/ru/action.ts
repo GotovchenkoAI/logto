@@ -1,11 +1,11 @@
 const action = {
-  sign_in: 'Войти',
+  sign_in: 'Продолжить',
   continue: 'Продолжить',
   continue_as: 'Продолжить как {{name}}',
   create_account: 'Создать аккаунт',
   create_account_without_linking: 'Создать новый вместо этого',
   create: 'Создать',
-  enter_passcode: 'Введите код подтверждения',
+  enter_passcode: 'Введите код из письма',
   confirm: 'Подтвердить',
   cancel: 'Отменить',
   save_password: 'Сохраните пароль',
