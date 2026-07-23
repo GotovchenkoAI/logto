@@ -26,6 +26,9 @@ Allowed Djinn-owned changes:
 - layout, styles, icons and brand assets;
 - Russian user-facing phrases;
 - UI tests for those surfaces.
+- narrow Experience orchestration that removes the separate registration choice: after Logto
+  verifies an unknown email identifier, the existing Logto registration action continues with
+  that same verification.
 
 Not allowed here:
 
@@ -33,3 +36,8 @@ Not allowed here:
 - OIDC/OAuth transaction semantics;
 - user linking or session logic;
 - application authorization.
+
+The unified email flow must not generate, inspect or verify OTP values itself. It may only react to
+Logto's typed `user.user_not_exist` outcome and invoke Logto's existing
+`registerWithVerifiedIdentifier` action. Terms acceptance remains enforced by Logto before account
+creation.

@@ -65,6 +65,21 @@ describe('IdentifierSignInForm', () => {
     jest.clearAllMocks();
   });
 
+  test('explains the unified email flow and offers to send one code', () => {
+    const { queryByText } = renderForm([
+      {
+        identifier: SignInIdentifier.Email,
+        password: false,
+        verificationCode: true,
+        isPasswordPrimary: false,
+      },
+    ]);
+
+    expect(queryByText('description.identifier_sign_in_description')).not.toBeNull();
+    expect(queryByText('action.enter_passcode')).not.toBeNull();
+    expect(queryByText('action.sign_in')).toBeNull();
+  });
+
   test('should show required error message when input is empty', async () => {
     const { getByText } = renderForm(mockSignInMethodSettingsTestCases[0]!);
     const submitButton = getByText('action.sign_in');

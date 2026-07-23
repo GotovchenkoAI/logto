@@ -1,4 +1,4 @@
-import { AgreeToTermsPolicy, type SignIn } from '@logto/schemas';
+import { AgreeToTermsPolicy, type SignIn, SignInIdentifier } from '@logto/schemas';
 import classNames from 'classnames';
 import { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -43,6 +43,11 @@ const IdentifierSignInForm = ({ className, autoFocus, signInMethods }: Props) =>
     () => signInMethods.map(({ identifier }) => identifier),
     [signInMethods]
   );
+  const isUnifiedEmailCodeFlow =
+    signInMethods.length === 1 &&
+    signInMethods[0]?.identifier === SignInIdentifier.Email &&
+    signInMethods[0].verificationCode &&
+    !signInMethods[0].password;
 
   const prefilledIdentifier = usePrefilledIdentifier({
     enabledIdentifiers: enabledSignInMethods,
@@ -114,6 +119,10 @@ const IdentifierSignInForm = ({ className, autoFocus, signInMethods }: Props) =>
 
   return (
     <form className={classNames(styles.form, className)} onSubmit={onSubmitHandler}>
+      {isUnifiedEmailCodeFlow && (
+        <div className={styles.message}>{t('description.identifier_sign_in_description')}</div>
+      )}
+
       <Controller
         control={control}
         name="identifier"
@@ -166,7 +175,13 @@ const IdentifierSignInForm = ({ className, autoFocus, signInMethods }: Props) =>
       <CaptchaBox />
       <Button
         name="submit"
-        title={showSingleSignOnForm ? 'action.single_sign_on' : 'action.sign_in'}
+        title={
+          showSingleSignOnForm
+            ? 'action.single_sign_on'
+            : isUnifiedEmailCodeFlow
+              ? 'action.enter_passcode'
+              : 'action.sign_in'
+        }
         icon={showSingleSignOnForm ? <LockIcon /> : undefined}
         htmlType="submit"
         isLoading={isSubmitting || isPasskeyFlowProcessing}

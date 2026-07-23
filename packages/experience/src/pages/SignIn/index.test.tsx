@@ -95,6 +95,12 @@ describe('<SignIn />', () => {
     expect(queryByText('description.privacy_policy')).not.toBeNull();
   });
 
+  test('does not expose a separate create-account entry in the unified email flow', () => {
+    const { queryByText } = renderSignIn();
+
+    expect(queryByText('action.create_account')).toBeNull();
+  });
+
   test('render with register only mode should redirect to the Register page', () => {
     const { queryByText } = renderWithPageContext(
       <SettingsProvider

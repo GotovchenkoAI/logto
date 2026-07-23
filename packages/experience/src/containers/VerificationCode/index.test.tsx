@@ -431,34 +431,23 @@ describe('<VerificationCode />', () => {
       );
 
     /**
-     * Drive the flow up to the terms agreement dialog: fail the sign-in with `user_not_exist`,
-     * fill the code, confirm the "account does not exist" modal, and return the terms dialog.
+     * Drive the unified flow up to the terms agreement dialog: fail the sign-in with
+     * `user_not_exist`, then let the verified identifier continue directly into registration.
      */
     const reachTermsDialog = async (identifier: VerificationCodeIdentifier) => {
       (identifyWithVerificationCode as jest.Mock).mockRejectedValueOnce(
         createRequestError('user.user_not_exist')
       );
 
-      const { container, findByText } = renderSignInToRegister(identifier);
+      const { container, findByText, queryByText } = renderSignInToRegister(identifier);
 
       fillVerificationCode(container);
-
-      /**
-       * The "account does not exist, create one?" confirmation modal shows up. Scope the lookup
-       * to the dialog, since the page itself also renders an `action.continue` button.
-       */
-      const modalContent = await findByText('description.sign_in_id_does_not_exist');
-      const dialog = modalContent.closest('[role="dialog"]');
-      assert(dialog, new Error('confirmation dialog not found'));
-
-      await act(async () => {
-        fireEvent.click(within(dialog as HTMLElement).getByText('action.continue'));
-      });
 
       // The terms agreement modal must be shown before the account is created.
       const termsContent = await findByText('description.agree_with_terms_modal');
       const termsDialog = termsContent.closest('[role="dialog"]');
       assert(termsDialog, new Error('terms agreement dialog not found'));
+      expect(queryByText('description.sign_in_id_does_not_exist')).toBeNull();
       expect(registerWithVerifiedIdentifier).not.toBeCalled();
 
       return termsDialog as HTMLElement;

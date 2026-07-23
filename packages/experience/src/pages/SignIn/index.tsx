@@ -28,14 +28,7 @@ const SignInFooters = () => {
   const { termsValidation, agreeToTermsPolicy } = useTerms();
   const navigate = useNavigateWithPreservedSearchParams();
 
-  const {
-    signInMethods,
-    signUpMethods,
-    socialConnectors,
-    signInMode,
-    singleSignOnEnabled,
-    passkeySignIn,
-  } = useSieMethods();
+  const { signInMethods, socialConnectors, singleSignOnEnabled, passkeySignIn } = useSieMethods();
 
   const { showSingleSignOnForm } = useContext(SingleSignOnFormModeContext);
 
@@ -76,15 +69,6 @@ const SignInFooters = () => {
                 )
             }
           </>
-        )
-      }
-      {
-        // Create Account footer
-        signInMode === SignInMode.SignInAndRegister && signUpMethods.length > 0 && (
-          <div className={styles.createAccount}>
-            {t('description.no_account')}{' '}
-            <TextLink replace to="/register" text="action.create_account" />
-          </div>
         )
       }
       {

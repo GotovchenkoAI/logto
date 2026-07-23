@@ -5,7 +5,7 @@ const action = {
   create_account: 'Создать аккаунт',
   create_account_without_linking: 'Создать новый вместо этого',
   create: 'Создать',
-  enter_passcode: 'Введите код из письма',
+  enter_passcode: 'Получить код',
   confirm: 'Подтвердить',
   cancel: 'Отменить',
   save_password: 'Сохраните пароль',

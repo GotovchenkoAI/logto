@@ -13,8 +13,16 @@ const allowed = (path) =>
   path === 'DJINN_UPSTREAM.md' ||
   path === 'Dockerfile.djinn-experience' ||
   path === 'package.json' ||
+  path === '.github/workflows/publish-djinn-experience.yml' ||
   path === '.scripts/verify-djinn-experience-boundary.mjs' ||
   path.startsWith('packages/experience/src/Layout/AppLayout/') ||
+  path ===
+    'packages/experience/src/containers/VerificationCode/use-sign-in-flow-code-verification.ts' ||
+  path === 'packages/experience/src/containers/VerificationCode/index.test.tsx' ||
+  path === 'packages/experience/src/components/IdentifierSignInForm/index.tsx' ||
+  path === 'packages/experience/src/components/IdentifierSignInForm/index.test.tsx' ||
+  path === 'packages/experience/src/pages/SignIn/index.tsx' ||
+  path === 'packages/experience/src/pages/SignIn/index.test.tsx' ||
   path.startsWith('packages/phrases-experience/src/locales/ru/');
 
 const forbidden = [...changed].filter((path) => !allowed(path));

@@ -60,7 +60,7 @@ const description = {
   continue_with_more_information:
     'Для дополнительной безопасности, пожалуйста, заполните приведенные ниже данные учетной записи.',
   create_your_account: 'Создайте пространство в Djinn',
-  sign_in_to_your_account: 'Войдите в Djinn',
+  sign_in_to_your_account: 'Продолжить с email',
   device_activation: 'Активация устройства',
   device_activation_description:
     'Введите код, отображённый на вашем устройстве. Убедитесь, что он совпадает, затем продолжите вход на этом устройстве.',
@@ -118,7 +118,7 @@ const description = {
   redirect_to: 'Вы будете перенаправлены на {{name}}.',
   auto_agreement: 'Продолжая, вы соглашаетесь с <link></link>.',
   identifier_sign_in_description:
-    'Введите email — пришлём один код для входа или создания аккаунта.',
+    'Введите email — пришлём код. Если вы здесь впервые, аккаунт создастся автоматически.',
   all_sign_in_options: 'Все варианты входа',
   identifier_register_description:
     'Введите свои {{types, list(type: disjunction;)}} чтобы создать новую учётную запись.',
