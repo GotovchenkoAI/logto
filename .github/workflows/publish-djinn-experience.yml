@@ -1,0 +1,75 @@
+name: Publish Djinn Logto Experience
+
+on:
+  push:
+    branches:
+      - djinn/v1.41.0-experience
+  workflow_dispatch:
+
+concurrency:
+  group: publish-djinn-experience-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: ghcr.io/gotovchenkoai/logto
+  LOGTO_BASE_IMAGE: ghcr.io/logto-io/logto:1.41.0@sha256:7f79547e3d1fe569a3ecae757968a7cfc579687aa8164eec35113c0adc983c5b
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    outputs:
+      image: ${{ steps.image.outputs.ref }}
+      digest: ${{ steps.build.outputs.digest }}
+
+    steps:
+      - name: Check out exact revision
+        uses: actions/checkout@v4
+
+      - name: Select immutable image reference
+        id: image
+        shell: bash
+        run: echo "ref=${IMAGE_NAME}:sha-${GITHUB_SHA}" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and publish amd64 image
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.djinn-experience
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.image.outputs.ref }}
+          build-args: |
+            LOGTO_BASE_IMAGE=${{ env.LOGTO_BASE_IMAGE }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=sha-${{ github.sha }}
+
+      - name: Report published artifact
+        shell: bash
+        env:
+          IMAGE_REF: ${{ steps.image.outputs.ref }}
+          IMAGE_DIGEST: ${{ steps.build.outputs.digest }}
+        run: |
+          {
+            echo "### Published Djinn Logto Experience"
+            echo
+            echo "- Image: \`${IMAGE_REF}\`"
+            echo "- Digest: \`${IMAGE_DIGEST}\`"
+            echo "- Deploy reference: \`${IMAGE_NAME}@${IMAGE_DIGEST}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
