@@ -1,12 +1,26 @@
 /* Typography Foundation */
 
+/*
+ * Inter Variable впереди системного стека: @font-face объявлены в
+ * scss/djinn-fonts.scss. Системные шрифты остаются фоллбеком на случай, если
+ * woff2 не доедет — экран входа обязан читаться и без загруженного шрифта.
+ */
 $font-family:
+  'Inter Variable',
   -apple-system,
   system-ui,
   'BlinkMacSystemFont',
   'Segoe UI',
   'Roboto',
   'Arial',
+  sans-serif;
+
+/* Заголовочное семейство: плотнее и с меньшим апертурой, как в кадрах. */
+$font-family-display:
+  'Inter Tight Variable',
+  'Inter Variable',
+  -apple-system,
+  system-ui,
   sans-serif;
 
 @mixin fonts {

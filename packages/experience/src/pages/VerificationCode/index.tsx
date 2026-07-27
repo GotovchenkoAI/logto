@@ -1,14 +1,14 @@
 import { SignInIdentifier, type VerificationCodeIdentifier } from '@logto/schemas';
-import { t } from 'i18next';
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { validate } from 'superstruct';
 
-import SecondaryPageLayout from '@/Layout/SecondaryPageLayout';
+import DjinnSignInLayout from '@/Layout/DjinnSignInLayout';
 import UserInteractionContext from '@/Providers/UserInteractionContextProvider/UserInteractionContext';
 import VerificationCodeContainer from '@/containers/VerificationCode';
 import { useSieMethods } from '@/hooks/use-sie';
 import ErrorPage from '@/pages/ErrorPage';
+import DjinnIdentifierChip from '@/pages/VerificationCode/DjinnIdentifierChip';
 import { type IdentifierInputValue } from '@/shared/components/InputFields/SmartInputField';
 import { UserFlow } from '@/types';
 import { userFlowGuard } from '@/types/guard';
@@ -60,22 +60,27 @@ const VerificationCode = () => {
   }
 
   return (
-    <SecondaryPageLayout
-      title={`description.verify_${type}`}
-      description="description.enter_passcode"
-      descriptionProps={{
-        address: t(`description.${type === SignInIdentifier.Email ? 'email' : 'phone_number'}`),
-        target:
-          type === SignInIdentifier.Phone ? formatPhoneNumberWithCountryCallingCode(value) : value,
-      }}
+    <DjinnSignInLayout
+      heading="Введите код"
+      pageTitle={`description.verify_${type}`}
+      subheading={
+        type === SignInIdentifier.Email
+          ? 'Отправили 6-значный код на почту. Он действует 10 минут.'
+          : 'Отправили 6-значный код в SMS. Он действует 10 минут.'
+      }
     >
+      <DjinnIdentifierChip
+        value={
+          type === SignInIdentifier.Phone ? formatPhoneNumberWithCountryCallingCode(value) : value
+        }
+      />
       <VerificationCodeContainer
         flow={userFlow}
         identifier={cachedIdentifierInputValue}
         verificationId={verificationId}
         hasPasswordButton={hasPasswordButton}
       />
-    </SecondaryPageLayout>
+    </DjinnSignInLayout>
   );
 };
 

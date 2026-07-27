@@ -35,8 +35,14 @@ describe('VerificationCode Page', () => {
       { initialEntries: ['/sign-in/verification-code'] }
     );
 
-    expect(queryByText('description.verify_email')).not.toBeNull();
-    expect(queryByText('description.enter_passcode')).not.toBeNull();
+    /*
+     * Проверяем видимый текст, а не ключи фраз: фразы приходят с сервера из
+     * собранного образа Logto, поэтому наш текст живёт в коде.
+     */
+    expect(queryByText('Введите код')).not.toBeNull();
+    expect(queryByText(/Отправили 6-значный код/)).not.toBeNull();
+    // Адрес показан рядом с полем: опечатка — самая частая причина «код не пришёл».
+    expect(queryByText('Изменить')).not.toBeNull();
   });
 
   it('render with invalid flow', () => {

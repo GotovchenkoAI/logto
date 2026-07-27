@@ -117,13 +117,15 @@ describe('<VerificationCode />', () => {
       />
     );
 
-    expect(queryByText('description.resend_after_seconds')).not.toBeNull();
+    /* Свой текст вместо ключа фразы: фразы приходят с сервера, а не из бандла. */
+    expect(queryByText('Не пришёл код?')).not.toBeNull();
+    expect(queryByText(/Отправить снова через \d+:\d{2}/)).not.toBeNull();
 
     act(() => {
       jest.advanceTimersByTime(1e3 * 60);
     });
 
-    expect(queryByText('description.resend_passcode')).not.toBeNull();
+    expect(queryByText('Отправить снова')).not.toBeNull();
   });
 
   it('fire resend event', async () => {
@@ -152,7 +154,7 @@ describe('<VerificationCode />', () => {
     act(() => {
       jest.advanceTimersByTime(1e3 * 60);
     });
-    const resendButton = getByText('Resend verification code');
+    const resendButton = getByText('Отправить снова');
 
     await waitFor(() => {
       fireEvent.click(resendButton);

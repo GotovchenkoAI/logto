@@ -32,3 +32,100 @@
     margin-top: _.unit(6);
   }
 }
+
+/*
+ * Боксы кода по кадру «Экран · Код (OTP)»: 62px, радиус 12, обводка 1.5.
+ * Стилизуем через класс, который контейнер уже пробрасывает наружу компонента,
+ * чтобы не трогать общий VerificationCodeInput — он живёт и в других потоках.
+ */
+.inputField :global(input) {
+  /* Боксы делят строку поровну: ширину задаёт flex, а не фиксированные 44px. */
+  flex: 1;
+  min-width: 0;
+  width: auto;
+  height: 62px;
+  border: 1.5px solid var(--djinn-line);
+  border-radius: 12px;
+  background: var(--djinn-surface);
+  color: var(--djinn-ink);
+  font-family: 'Inter Tight Variable', 'Inter Variable', system-ui, sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  caret-color: #7b61ff;
+
+  /*
+   * Градиентная рамка активного бокса: обычный border градиент не принимает,
+   * поэтому две подложки — сплошная по padding-box и градиент по border-box.
+   */
+  &:focus {
+    border-color: transparent;
+    background-image: linear-gradient(var(--djinn-surface), var(--djinn-surface)),
+      linear-gradient(118deg, #7b61ff, #ff6b5b);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    border-width: 2px;
+    box-shadow: 0 4px 14px #7b61ff29;
+    outline: none;
+  }
+}
+
+/* Боксы делят строку поровну: в кадре между ними ровно 10. */
+.inputField :global(div) {
+  gap: 10px;
+}
+
+/* Строка повтора в кадре стоит по центру, а не по левому краю. */
+.form .message {
+  align-self: center;
+  text-align: center;
+  font-size: 13.5px;
+}
+
+.messageLead {
+  color: var(--djinn-sec);
+}
+
+.messageTimer {
+  color: var(--djinn-muted);
+  font-weight: 500;
+
+  /* Цифры не должны дёргать строку каждую секунду. */
+  font-variant-numeric: tabular-nums;
+}
+
+.resend {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--djinn-link);
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/* Возврат к вводу почты: последняя строка кадра. */
+.backToSignIn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: center;
+  width: auto;
+  margin-top: 18px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--djinn-link);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

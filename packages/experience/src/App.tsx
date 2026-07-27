@@ -58,6 +58,8 @@ import { UserMfaFlow } from './types';
 import 'overlayscrollbars/overlayscrollbars.css';
 import './shared/scss/normalized.scss';
 import './scss/overlayscrollbars.scss';
+// Шрифты продукта идут после normalize: их @font-face должны пережить сброс.
+import './scss/djinn-fonts.scss';
 
 handleSearchParametersData();
 

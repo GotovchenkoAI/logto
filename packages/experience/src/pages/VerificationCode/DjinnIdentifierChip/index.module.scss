@@ -1,0 +1,59 @@
+.row {
+  margin-bottom: 20px;
+}
+
+/* Плашка адреса по кадру: радиус 10, поля 9/13, обводка 1. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  max-width: 100%;
+  padding: 9px 13px;
+  border: 1px solid var(--djinn-divider);
+  border-radius: 10px;
+  background: var(--djinn-inset);
+}
+
+.icon {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  color: var(--djinn-sec);
+}
+
+.value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--djinn-ink);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.dot {
+  flex: none;
+  color: var(--djinn-line);
+}
+
+.change {
+  flex: none;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--djinn-link);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #7b61ff;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}

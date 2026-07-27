@@ -1,11 +1,11 @@
 import { type VerificationCodeIdentifier } from '@logto/schemas';
 import classNames from 'classnames';
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
+import DjinnSubmitButton from '@/components/DjinnSubmitButton';
 import SwitchToVerificationMethodsLink from '@/components/SwitchToVerificationMethodsLink';
-import TextLink from '@/components/TextLink';
-import Button from '@/shared/components/Button';
 import VerificationCodeInput, { defaultLength } from '@/shared/components/VerificationCode';
 import { UserFlow } from '@/types';
 
@@ -32,6 +32,7 @@ const VerificationCode = ({
   const [inputErrorMessage, setInputErrorMessage] = useState<string>();
 
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const isCodeInputReady = useMemo(
     () => codeInput.length === defaultLength && codeInput.every(Boolean),
@@ -105,30 +106,6 @@ const VerificationCode = ({
         error={errorMessage}
         onChange={setCodeInput}
       />
-      <div className={styles.message}>
-        {isRunning ? (
-          <Trans components={{ span: <span key="counter" /> }}>
-            {t('description.resend_after_seconds', { seconds })}
-          </Trans>
-        ) : (
-          <Trans
-            components={{
-              a: (
-                <TextLink
-                  className={styles.link}
-                  onClick={async () => {
-                    clearErrorMessage();
-                    await onResendVerificationCode();
-                    setCodeInput([]);
-                  }}
-                />
-              ),
-            }}
-          >
-            {t('description.resend_passcode')}
-          </Trans>
-        )}
-      </div>
       {flow === UserFlow.SignIn && (
         <SwitchToVerificationMethodsLink
           hasPassword={hasPasswordButton}
@@ -137,11 +114,10 @@ const VerificationCode = ({
           className={styles.switch}
         />
       )}
-      <Button
-        title="action.continue"
-        type="primary"
-        isLoading={isSubmitting}
+      <DjinnSubmitButton
         className={styles.continueButton}
+        htmlType="button"
+        isLoading={isSubmitting}
         onClick={() => {
           if (!isCodeInputReady) {
             setInputErrorMessage(t('error.invalid_passcode'));
@@ -150,7 +126,60 @@ const VerificationCode = ({
 
           void handleSubmit(codeInput);
         }}
-      />
+      >
+        Подтвердить и войти
+      </DjinnSubmitButton>
+      {/*
+        Строка повтора стоит ПОД кнопкой, как в кадре: пока код не введён,
+        главное действие — ввести его, а не переотправить. Отсчёт показываем как
+        м:сс — «через 43 секунд» не согласовано по падежу, а склонять число в
+        трёх формах ради подписи к таймеру незачем.
+      */}
+      <div className={styles.message}>
+        <span className={styles.messageLead}>Не пришёл код?</span>{' '}
+        {isRunning ? (
+          <span className={styles.messageTimer}>
+            Отправить снова через {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, '0')}
+          </span>
+        ) : (
+          <button
+            className={styles.resend}
+            type="button"
+            onClick={async () => {
+              clearErrorMessage();
+              await onResendVerificationCode();
+              setCodeInput([]);
+            }}
+          >
+            Отправить снова
+          </button>
+        )}
+      </div>
+      <button
+        className={styles.backToSignIn}
+        type="button"
+        onClick={() => {
+          navigate(-1);
+        }}
+      >
+        <svg
+          aria-hidden="true"
+          fill="none"
+          height="15"
+          viewBox="0 0 15 15"
+          width="15"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 7.5H3M7 3.5l-4 4 4 4"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.8"
+          />
+        </svg>
+        Вернуться к входу
+      </button>
     </form>
   );
 };

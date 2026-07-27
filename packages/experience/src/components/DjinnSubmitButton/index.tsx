@@ -7,6 +7,12 @@ type Props = {
   readonly isLoading?: boolean;
   readonly isDisabled?: boolean;
   readonly className?: string;
+  /**
+   * `button` для форм без onSubmit: экран кода отправляет обработчиком, и тип
+   * `submit` там перезагрузил бы страницу вместо проверки кода.
+   */
+  readonly htmlType?: 'submit' | 'button';
+  readonly onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 /**
@@ -18,11 +24,19 @@ type Props = {
  * Logto. Наш текст не должен ждать пересборки образа, поэтому строки живут в
  * коде рядом с разметкой.
  */
-const DjinnSubmitButton = ({ children, isLoading, isDisabled, className }: Props) => (
+const DjinnSubmitButton = ({
+  children,
+  isLoading,
+  isDisabled,
+  className,
+  htmlType = 'submit',
+  onClick,
+}: Props) => (
   <button
     className={classNames(styles.button, className)}
     disabled={isDisabled ?? isLoading}
-    type="submit"
+    type={htmlType}
+    onClick={onClick}
   >
     <span className={styles.label}>{children}</span>
     {isLoading ? (
