@@ -206,7 +206,13 @@ const VerificationCode = ({
             type="number"
             inputMode="numeric"
             pattern="[0-9]*"
-            autoComplete="off"
+            /*
+             * Код из письма система предлагает подставить сама — но только если
+             * поле себя так назвало. С `off` предложение не появлялось вовсе.
+             * Ставим на все шесть клеток: подстановка приходит целой строкой в
+             * ту, что в фокусе, а `updateValue` разносит её по остальным.
+             */
+            autoComplete="one-time-code"
             onPaste={onPasteHandler}
             onInput={onInputHandler}
             onKeyDown={onKeyDownHandler}
