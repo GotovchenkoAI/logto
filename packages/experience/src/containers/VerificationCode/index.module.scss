@@ -59,18 +59,32 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Наведение — подложкой: см. пояснение у «Изменить» в DjinnIdentifierChip. */
 .resend {
-  padding: 0;
+  margin: -5px -8px;
+  padding: 5px 8px;
   border: none;
-  background: none;
+  border-radius: 7px;
+  background: transparent;
   color: var(--djinn-link);
   font-family: inherit;
   font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 120ms ease;
 
   &:hover {
-    text-decoration: underline;
+    background: var(--djinn-accent-tint);
+  }
+
+  &:focus-visible {
+    background: var(--djinn-accent-tint);
+    outline: 2px solid #7b61ff;
+    outline-offset: 1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 }
 
@@ -82,16 +96,30 @@
   align-self: center;
   width: auto;
   margin-top: 28px;
-  padding: 0;
+
+  /* Мишень заметно больше кегля: это последний шанс вернуться, если ошибся адресом. */
+  padding: 8px 12px;
   border: none;
-  background: none;
+  border-radius: 9px;
+  background: transparent;
   color: var(--djinn-link);
   font-family: inherit;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 120ms ease;
 
   &:hover {
-    text-decoration: underline;
+    background: var(--djinn-accent-tint);
+  }
+
+  &:focus-visible {
+    background: var(--djinn-accent-tint);
+    outline: 2px solid #7b61ff;
+    outline-offset: 1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 }

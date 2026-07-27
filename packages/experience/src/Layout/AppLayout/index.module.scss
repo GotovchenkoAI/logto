@@ -28,6 +28,9 @@
 
   /* Точка-разделитель в плашке адреса: светлее текста, но заметна. */
   --djinn-dot: #c7cacf;
+
+  /* Подложка наведения у текстовых контролов. */
+  --djinn-accent-tint: #7b61ff14;
   --djinn-surface: #fff;
   --djinn-inset: #f6f6f9;
   --djinn-page: #fff;
@@ -49,6 +52,7 @@
     --djinn-divider: #ffffff14;
     --djinn-code-border: #ffffff2e;
     --djinn-dot: #ffffff3d;
+    --djinn-accent-tint: #bba9ff1f;
     --djinn-surface: #22262f;
     --djinn-inset: #ffffff12;
     --djinn-page: #141620;
@@ -66,6 +70,7 @@
   --djinn-inset: #ffffff12;
   --djinn-code-border: #ffffff2e;
   --djinn-dot: #ffffff3d;
+  --djinn-accent-tint: #bba9ff1f;
   --djinn-page: #141620;
   --djinn-link: #bba9ff;
 }
@@ -78,6 +83,7 @@
   --djinn-divider: #eaebef;
   --djinn-code-border: #d7d7de;
   --djinn-dot: #c7cacf;
+  --djinn-accent-tint: #7b61ff14;
   --djinn-surface: #fff;
   --djinn-inset: #f6f6f9;
   --djinn-page: #fff;

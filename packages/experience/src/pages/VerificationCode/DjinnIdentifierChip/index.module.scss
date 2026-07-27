@@ -36,24 +36,41 @@
   color: var(--djinn-dot);
 }
 
+/*
+ * Наведение показывает подложкой, а не подчёркиванием.
+ *
+ * Подчёркивание — конвенция ссылок внутри текста; здесь это отдельный контрол,
+ * и он уже опознаётся по цвету. Подложка вместо этого делает видимой мишень, а
+ * постоянные поля увеличивают её всегда, а не только под курсором — на тач-
+ * устройствах наведения не существует вовсе.
+ */
 .change {
   flex: none;
-  padding: 0;
+
+  /* Поля постоянные: появись они при наведении, строка бы дёргалась. */
+  margin: -5px -8px;
+  padding: 5px 8px;
   border: none;
-  background: none;
+  border-radius: 7px;
+  background: transparent;
   color: var(--djinn-link);
   font-family: inherit;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 120ms ease;
 
   &:hover {
-    text-decoration: underline;
+    background: var(--djinn-accent-tint);
   }
 
   &:focus-visible {
+    background: var(--djinn-accent-tint);
     outline: 2px solid #7b61ff;
-    outline-offset: 2px;
-    border-radius: 4px;
+    outline-offset: 1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 }
