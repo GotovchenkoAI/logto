@@ -1,27 +1,51 @@
 @use '@/shared/scss/underscore' as _;
 
+/*
+ * Боксы кода по кадру «Экран · Код (OTP)»: 62px, радиус 12, обводка 1.5.
+ *
+ * Стили живут здесь, а не в контейнере: у Logto было правило
+ * `body.desktop .passcode input:focus` со специфичностью выше любой разумной
+ * снаружи, и градиентная обводка молча проигрывала сплошной фиолетовой.
+ * Компонент используется только нашими потоками, поэтому правим его прямо.
+ */
+
 .passcode {
   @include _.flex-row;
-  justify-content: space-between;
+  gap: 10px;
 
   input {
-    width: 44px;
-    height: 44px;
-    border-radius: _.unit(2);
-    border: _.border(var(--color-line-border));
-    background: transparent;
+    /* Боксы делят строку поровну, а не держат фиксированные 44px. */
+    flex: 1;
+    min-width: 0;
+    height: 62px;
+    border: 1.5px solid var(--djinn-code-border, var(--color-line-border));
+    border-radius: 12px;
+    background: var(--djinn-surface, transparent);
     text-align: center;
-    font: var(--font-label-1);
-    color: var(--color-type-primary);
-    caret-color: var(--color-brand-default);
+    font-family: 'Inter Tight Variable', 'Inter Variable', system-ui, sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--djinn-ink, var(--color-type-primary));
+    caret-color: #7b61ff;
 
+    /*
+     * Градиентная рамка: border градиент не принимает, поэтому две подложки —
+     * сплошная по padding-box поверх градиента по border-box.
+     */
     &:focus {
-      border: _.border(var(--color-brand-default));
+      border-color: transparent;
+      border-width: 2px;
+      background-image:
+        linear-gradient(var(--djinn-surface, #fff), var(--djinn-surface, #fff)),
+        linear-gradient(118deg, #7b61ff, #ff6b5b);
+      background-origin: border-box;
+      background-clip: padding-box, border-box;
+      box-shadow: 0 4px 14px #7b61ff29;
       outline: none;
     }
 
     &::placeholder {
-      color: var(--color-type-secondary);
+      color: var(--djinn-muted, var(--color-type-secondary));
     }
   }
 }
@@ -31,16 +55,14 @@
   margin-top: _.unit(1);
 }
 
+/*
+ * Десктопная ветка Logto перекрывала шрифт и рисовала свою рамку фокуса.
+ * Оставляем только то, что не спорит с кадром.
+ */
 :global(body.desktop) {
   .passcode {
     input {
-      font: var(--font-body-2);
       outline: 3px solid transparent;
-
-      &:focus {
-        border: _.border(var(--color-brand-default));
-        outline-color: var(--color-overlay-brand-focused);
-      }
     }
   }
 }

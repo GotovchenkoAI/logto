@@ -22,6 +22,12 @@
   --djinn-muted: #9296a1;
   --djinn-line: #e4e4ea;
   --djinn-divider: #eaebef;
+
+  /* Рамка боксов кода темнее общей линии: в кадре они читаются как поля ввода. */
+  --djinn-code-border: #d7d7de;
+
+  /* Точка-разделитель в плашке адреса: светлее текста, но заметна. */
+  --djinn-dot: #c7cacf;
   --djinn-surface: #fff;
   --djinn-inset: #f6f6f9;
   --djinn-page: #fff;
@@ -41,6 +47,8 @@
     --djinn-muted: #828c9e;
     --djinn-line: #ffffff1f;
     --djinn-divider: #ffffff14;
+    --djinn-code-border: #ffffff2e;
+    --djinn-dot: #ffffff3d;
     --djinn-surface: #22262f;
     --djinn-inset: #ffffff12;
     --djinn-page: #141620;
@@ -56,6 +64,8 @@
   --djinn-divider: #ffffff14;
   --djinn-surface: #22262f;
   --djinn-inset: #ffffff12;
+  --djinn-code-border: #ffffff2e;
+  --djinn-dot: #ffffff3d;
   --djinn-page: #141620;
   --djinn-link: #bba9ff;
 }
@@ -66,6 +76,8 @@
   --djinn-muted: #9296a1;
   --djinn-line: #e4e4ea;
   --djinn-divider: #eaebef;
+  --djinn-code-border: #d7d7de;
+  --djinn-dot: #c7cacf;
   --djinn-surface: #fff;
   --djinn-inset: #f6f6f9;
   --djinn-page: #fff;

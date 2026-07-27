@@ -7,8 +7,9 @@
     width: 100%;
   }
 
+  /* Обёртка кадра держит ровно 28 между всеми блоками. */
   .inputField {
-    margin-bottom: _.unit(8);
+    margin-bottom: 28px;
 
     &.withError {
       margin-bottom: _.unit(2);
@@ -27,56 +28,21 @@
     align-self: start;
   }
 
-  .switch,
-  .continueButton {
+  .switch {
     margin-top: _.unit(6);
   }
-}
 
-/*
- * Боксы кода по кадру «Экран · Код (OTP)»: 62px, радиус 12, обводка 1.5.
- * Стилизуем через класс, который контейнер уже пробрасывает наружу компонента,
- * чтобы не трогать общий VerificationCodeInput — он живёт и в других потоках.
- */
-.inputField :global(input) {
-  /* Боксы делят строку поровну: ширину задаёт flex, а не фиксированные 44px. */
-  flex: 1;
-  min-width: 0;
-  width: auto;
-  height: 62px;
-  border: 1.5px solid var(--djinn-line);
-  border-radius: 12px;
-  background: var(--djinn-surface);
-  color: var(--djinn-ink);
-  font-family: 'Inter Tight Variable', 'Inter Variable', system-ui, sans-serif;
-  font-size: 26px;
-  font-weight: 600;
-  caret-color: #7b61ff;
-
-  /*
-   * Градиентная рамка активного бокса: обычный border градиент не принимает,
-   * поэтому две подложки — сплошная по padding-box и градиент по border-box.
-   */
-  &:focus {
-    border-color: transparent;
-    background-image: linear-gradient(var(--djinn-surface), var(--djinn-surface)),
-      linear-gradient(118deg, #7b61ff, #ff6b5b);
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
-    border-width: 2px;
-    box-shadow: 0 4px 14px #7b61ff29;
-    outline: none;
+  /* Кнопка идёт сразу за боксами: их margin-bottom и есть зазор кадра. */
+  .continueButton {
+    margin-top: 0;
   }
-}
-
-/* Боксы делят строку поровну: в кадре между ними ровно 10. */
-.inputField :global(div) {
-  gap: 10px;
 }
 
 /* Строка повтора в кадре стоит по центру, а не по левому краю. */
 .form .message {
   align-self: center;
+  width: auto;
+  margin-top: 28px;
   text-align: center;
   font-size: 13.5px;
 }
@@ -115,7 +81,7 @@
   gap: 6px;
   align-self: center;
   width: auto;
-  margin-top: 18px;
+  margin-top: 28px;
   padding: 0;
   border: none;
   background: none;
