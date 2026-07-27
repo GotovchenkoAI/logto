@@ -68,9 +68,12 @@
 }
 
 .djinnHint {
-  /* Поднимается под поле: у .inputField снизу свой отступ в 16px. */
-  margin-top: -6px;
-  margin-bottom: 10px;
+  /*
+   * Подсказка принадлежит полю, поэтому сверху прижата к нему, а снизу держит
+   * воздух: без него кнопка читается как часть поля, а не как отдельное действие.
+   */
+  margin-top: -2px;
+  margin-bottom: 20px;
   color: var(--djinn-sec);
   font-size: 13px;
   line-height: 1.5;

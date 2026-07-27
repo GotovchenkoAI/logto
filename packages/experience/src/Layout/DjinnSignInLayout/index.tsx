@@ -11,6 +11,8 @@ type Props = {
   readonly pageTitle: TFuncKey;
   readonly heading: string;
   readonly subheading: string;
+  /** Обещание о данных со щитом. Снимает главный страх до нажатия кнопки. */
+  readonly privacy?: string;
   /**
    * Правовая сноска под формой. Своя, а не `TermsAndPrivacyLinks`: тот молчит,
    * пока условия не заведены в консоли Logto, а обязательство перед человеком
@@ -27,7 +29,7 @@ type Props = {
  * текст. Логотип намеренно не берётся из админки — марка продукта не должна
  * зависеть от того, загрузил ли кто-то картинку в консоль.
  */
-const DjinnSignInLayout = ({ children, pageTitle, heading, subheading, legal }: Props) => (
+const DjinnSignInLayout = ({ children, pageTitle, heading, subheading, privacy, legal }: Props) => (
   <FirstScreenLayout pageMeta={{ titleKey: pageTitle }}>
     <header className={styles.header}>
       <div className={styles.logo}>
@@ -59,6 +61,33 @@ const DjinnSignInLayout = ({ children, pageTitle, heading, subheading, legal }: 
       <p className={styles.subheading}>{subheading}</p>
     </header>
     {children}
+    {privacy && (
+      <p className={styles.privacy}>
+        <svg
+          aria-hidden="true"
+          className={styles.shield}
+          fill="none"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M20 12c0 5-3.5 7.4-7.66 8.92a1 1 0 0 1-.67 0C7.5 19.4 4 17 4 12V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1Z"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+          />
+          <path
+            d="m9 12 2 2 4-4"
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+          />
+        </svg>
+        <span>{privacy}</span>
+      </p>
+    )}
     {legal && <p className={styles.legal}>{legal}</p>}
   </FirstScreenLayout>
 );
