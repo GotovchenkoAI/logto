@@ -21,7 +21,7 @@ const useForgotPasswordFlowCodeVerification = (
   const verifyVerificationCode = useApi(identifyWithVerificationCode);
 
   const { generalVerificationCodeErrorHandlers, errorMessage, clearErrorMessage } =
-    useGeneralVerificationCodeErrorHandler();
+    useGeneralVerificationCodeErrorHandler(errorCallback);
   const identifierErrorHandler = useIdentifierErrorAlert();
 
   const errorHandlers: ErrorHandlers = useMemo(

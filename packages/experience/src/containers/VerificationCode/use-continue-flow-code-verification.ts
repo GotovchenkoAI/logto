@@ -47,7 +47,7 @@ const useContinueFlowCodeVerification = (
   const asyncBindMfa = useApi(bindMfa);
 
   const { generalVerificationCodeErrorHandlers, errorMessage, clearErrorMessage } =
-    useGeneralVerificationCodeErrorHandler();
+    useGeneralVerificationCodeErrorHandler(errorCallback);
 
   const submitInteractionErrorHandler = useSubmitInteractionErrorHandler(interactionEvent, {
     replace: true,

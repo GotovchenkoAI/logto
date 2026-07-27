@@ -38,7 +38,7 @@ const useRegisterFlowCodeVerification = (
   const verifyVerificationCode = useApi(identifyWithVerificationCode);
 
   const { errorMessage, clearErrorMessage, generalVerificationCodeErrorHandlers } =
-    useGeneralVerificationCodeErrorHandler();
+    useGeneralVerificationCodeErrorHandler(errorCallback);
 
   const preRegisterErrorHandler = useSubmitInteractionErrorHandler(InteractionEvent.Register, {
     replace: true,

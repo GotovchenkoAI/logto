@@ -28,7 +28,7 @@ const useSignInFlowCodeVerification = (
   const asyncSignInWithVerificationCodeIdentifier = useApi(identifyWithVerificationCode);
 
   const { errorMessage, clearErrorMessage, generalVerificationCodeErrorHandlers } =
-    useGeneralVerificationCodeErrorHandler();
+    useGeneralVerificationCodeErrorHandler(errorCallback);
 
   const preSignInErrorHandler = useSubmitInteractionErrorHandler(InteractionEvent.SignIn, {
     replace: true,
