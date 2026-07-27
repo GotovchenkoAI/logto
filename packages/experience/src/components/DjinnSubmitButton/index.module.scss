@@ -1,0 +1,71 @@
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 0;
+  border: none;
+  border-radius: 11px;
+  background: linear-gradient(118deg, #7b61ff, #ff6b5b);
+  box-shadow: 0 6px 18px #7b61ff33;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15.5px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.04);
+  }
+
+  &:active:not(:disabled) {
+    filter: brightness(0.97);
+    box-shadow: 0 3px 10px #7b61ff2e;
+  }
+
+  &:disabled {
+    /* Погашенная кнопка остаётся читаемой: серый прямоугольник выглядит поломкой. */
+    opacity: 0.55;
+    cursor: default;
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #7b61ff;
+    outline-offset: 2px;
+  }
+}
+
+.label {
+  white-space: nowrap;
+}
+
+.arrow {
+  flex: none;
+  width: 17px;
+  height: 17px;
+}
+
+.spinner {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  border: 2px solid #ffffff59;
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: djinn-spin 0.7s linear infinite;
+}
+
+@keyframes djinn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Ожидание не должно крутиться у тех, кто просил меньше движения. */
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation-duration: 2.4s;
+  }
+}

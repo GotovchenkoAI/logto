@@ -3,7 +3,7 @@ import { useCallback, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useSearchParams } from 'react-router-dom';
 
-import LandingPageLayout from '@/Layout/LandingPageLayout';
+import DjinnSignInLayout from '@/Layout/DjinnSignInLayout';
 import SingleSignOnFormModeContextProvider from '@/Providers/SingleSignOnFormModeContextProvider';
 import SingleSignOnFormModeContext from '@/Providers/SingleSignOnFormModeContextProvider/SingleSignOnFormModeContext';
 import WebAuthnContextProvider from '@/Providers/WebAuthnContextProvider';
@@ -108,7 +108,12 @@ const SignIn = () => {
   }
 
   return (
-    <LandingPageLayout title="description.sign_in_to_your_account">
+    <DjinnSignInLayout
+      heading="Добро пожаловать"
+      legal="Продолжая, вы принимаете оферту и политику обработки данных. Защита по 152-ФЗ."
+      pageTitle="description.sign_in_to_your_account"
+      subheading="Готовые юридические документы за минуты. Вход и регистрация — в одном окне."
+    >
       <GoogleOneTap context="signin" />
       <WebAuthnContextProvider>
         <SingleSignOnFormModeContextProvider>
@@ -122,7 +127,7 @@ const SignIn = () => {
           <TermsAndPrivacyLinks className={styles.terms} />
         )
       }
-    </LandingPageLayout>
+    </DjinnSignInLayout>
   );
 };
 

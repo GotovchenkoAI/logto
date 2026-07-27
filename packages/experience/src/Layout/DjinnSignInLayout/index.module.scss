@@ -1,0 +1,87 @@
+/*
+ * Шапка по кадрам «Экран · Вход» (заголовок 30px) и «Экран · Код (OTP)».
+ * Цвета берутся из --djinn-* в AppLayout, поэтому шапка следует за темой.
+ */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 30px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.mark {
+  flex: none;
+  width: 24px;
+  height: 24px;
+}
+
+.wordmark {
+  font-family: 'Inter Tight', Inter, system-ui, sans-serif;
+  font-size: 21px;
+  font-weight: 700;
+  letter-spacing: -0.4px;
+  color: var(--djinn-ink);
+}
+
+.heading {
+  margin: 0;
+  font-family: 'Inter Tight', Inter, system-ui, sans-serif;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+  line-height: 1.2;
+  color: var(--djinn-ink);
+}
+
+/* Заголовок и подзаголовок стоят парой: разрыв между ними меньше, чем до логотипа. */
+.heading + .subheading {
+  margin-top: -12px;
+}
+
+.subheading {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--djinn-sec);
+}
+
+.legal {
+  width: 100%;
+  margin: 20px 0 0;
+  color: var(--djinn-muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+@media only screen and (max-width: 620px) {
+  .header {
+    gap: 16px;
+    margin-bottom: 22px;
+  }
+
+  .wordmark {
+    font-size: 20px;
+  }
+
+  .heading {
+    font-size: 26px;
+    letter-spacing: -0.6px;
+  }
+
+  .heading + .subheading {
+    margin-top: -9px;
+  }
+
+  .subheading {
+    font-size: 14px;
+  }
+}

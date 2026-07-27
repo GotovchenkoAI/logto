@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import UserInteractionContext from '@/Providers/UserInteractionContextProvider/UserInteractionContext';
 import WebAuthnContext from '@/Providers/WebAuthnContextProvider/WebAuthnContext';
 import LockIcon from '@/assets/icons/lock.svg?react';
+import DjinnSubmitButton from '@/components/DjinnSubmitButton';
 import { SmartInputField } from '@/components/InputFields';
 import CaptchaBox from '@/containers/CaptchaBox';
 import TermsAndPrivacyCheckbox from '@/containers/TermsAndPrivacyCheckbox';
@@ -119,9 +120,7 @@ const IdentifierSignInForm = ({ className, autoFocus, signInMethods }: Props) =>
 
   return (
     <form className={classNames(styles.form, className)} onSubmit={onSubmitHandler}>
-      {isUnifiedEmailCodeFlow && (
-        <div className={styles.message}>{t('description.identifier_sign_in_description')}</div>
-      )}
+      {isUnifiedEmailCodeFlow && <div className={styles.djinnLabel}>Email</div>}
 
       <Controller
         control={control}
@@ -139,18 +138,46 @@ const IdentifierSignInForm = ({ className, autoFocus, signInMethods }: Props) =>
               : true;
           },
         }}
-        render={({ field, formState: { defaultValues } }) => (
-          <SmartInputField
-            autoFocus={autoFocus}
-            className={styles.inputField}
-            {...field}
-            isDanger={!!errors.identifier || !!errorMessage}
-            errorMessage={errors.identifier?.message}
-            enabledTypes={enabledSignInMethods}
-            defaultValue={defaultValues?.identifier?.value}
-          />
-        )}
+        render={({ field, formState: { defaultValues } }) =>
+          /*
+           * При потоке «только email» ставим обычное поле вместо SmartInputField.
+           * Тот рисует notched border с плавающим label — другая система, чем в
+           * кадре, и снаружи она не переопределяется. Умное определение типа
+           * здесь всё равно не работает: тип ровно один.
+           */
+          isUnifiedEmailCodeFlow ? (
+            <input
+              autoComplete="email"
+              autoFocus={autoFocus}
+              className={styles.djinnInput}
+              name={field.name}
+              placeholder="you@example.com"
+              type="email"
+              value={field.value.value}
+              onBlur={field.onBlur}
+              onChange={({ target: { value } }) => {
+                field.onChange({ type: SignInIdentifier.Email, value });
+              }}
+            />
+          ) : (
+            <SmartInputField
+              autoFocus={autoFocus}
+              className={styles.inputField}
+              {...field}
+              isDanger={!!errors.identifier || !!errorMessage}
+              errorMessage={errors.identifier?.message}
+              enabledTypes={enabledSignInMethods}
+              defaultValue={defaultValues?.identifier?.value}
+            />
+          )
+        }
       />
+
+      {isUnifiedEmailCodeFlow && !errorMessage && (
+        <div className={styles.djinnHint}>
+          Введите email — пришлём код. Если вы здесь впервые, аккаунт создастся автоматически.
+        </div>
+      )}
 
       {errorMessage && <ErrorMessage className={styles.formErrors}>{errorMessage}</ErrorMessage>}
 
@@ -173,19 +200,19 @@ const IdentifierSignInForm = ({ className, autoFocus, signInMethods }: Props) =>
       />
 
       <CaptchaBox />
-      <Button
-        name="submit"
-        title={
-          showSingleSignOnForm
-            ? 'action.single_sign_on'
-            : isUnifiedEmailCodeFlow
-              ? 'action.enter_passcode'
-              : 'action.sign_in'
-        }
-        icon={showSingleSignOnForm ? <LockIcon /> : undefined}
-        htmlType="submit"
-        isLoading={isSubmitting || isPasskeyFlowProcessing}
-      />
+      {isUnifiedEmailCodeFlow && !showSingleSignOnForm ? (
+        <DjinnSubmitButton isLoading={isSubmitting || isPasskeyFlowProcessing}>
+          Получить код
+        </DjinnSubmitButton>
+      ) : (
+        <Button
+          name="submit"
+          title={showSingleSignOnForm ? 'action.single_sign_on' : 'action.sign_in'}
+          icon={showSingleSignOnForm ? <LockIcon /> : undefined}
+          htmlType="submit"
+          isLoading={isSubmitting || isPasskeyFlowProcessing}
+        />
+      )}
 
       <input hidden type="submit" />
     </form>

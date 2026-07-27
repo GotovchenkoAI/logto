@@ -75,9 +75,14 @@ describe('IdentifierSignInForm', () => {
       },
     ]);
 
-    expect(queryByText('description.identifier_sign_in_description')).not.toBeNull();
-    expect(queryByText('action.enter_passcode')).not.toBeNull();
+    /*
+     * Проверяем текст, который видит человек, а не ключи фраз: фразы приходят с
+     * сервера из собранного образа Logto, поэтому наш текст живёт в коде.
+     */
+    expect(queryByText(/аккаунт создастся автоматически/)).not.toBeNull();
+    expect(queryByText('Получить код')).not.toBeNull();
     expect(queryByText('action.sign_in')).toBeNull();
+    expect(queryByText('action.enter_passcode')).toBeNull();
   });
 
   test('should show required error message when input is empty', async () => {
