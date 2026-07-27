@@ -1,114 +1,153 @@
-@use '@/shared/scss/underscore' as _;
+/*
+ * Правая панель по кадру «Экран · Вход» → «Панель» (680px, поля 24).
+ * Скрывается вместе с узким экраном и попапом — правило живёт в index.module.scss.
+ */
 
 .panel {
-  width: min(43vw, 470px);
-  min-height: 540px;
-  padding: 38px 12px 30px;
-  display: flex;
-  flex-direction: column;
-  color: #f8f5ff;
+  width: 680px;
+  flex: 0 0 auto;
+  padding: 24px;
 }
 
-.wordmark {
+/*
+ * Mesh-градиент кадра приближён шестью радиальными пятнами по тем же опорным
+ * точкам (2 колонки × 3 ряда). Радиальные градиенты рисуются один поверх
+ * другого, поэтому порядок важен: светлые углы сверху, тёплый низ последним.
+ */
+.gradient {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 56px;
+  border-radius: 28px;
+  background:
+    radial-gradient(120% 90% at 0% 0%, #ede9ff 0%, #ede9ff00 60%),
+    radial-gradient(120% 90% at 100% 0%, #dce6ff 0%, #dce6ff00 60%),
+    radial-gradient(120% 90% at 0% 50%, #7b61ff 0%, #7b61ff00 62%),
+    radial-gradient(120% 90% at 100% 50%, #5b6bff 0%, #5b6bff00 62%),
+    radial-gradient(130% 95% at 0% 100%, #ff5b9e 0%, #ff5b9e00 64%),
+    radial-gradient(130% 95% at 100% 100%, #ff6b4a 0%, #ff6b4a00 64%),
+    linear-gradient(160deg, #c9c2ff, #ff7a63);
+}
+
+.headline {
+  width: 440px;
+  max-width: 100%;
+  margin: 0;
+  color: #fff;
+  font-family: 'Inter Tight', Inter, system-ui, sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  letter-spacing: -0.8px;
+  line-height: 1.15;
+  text-align: center;
+}
+
+/* Иллюстрация композера: матовое стекло поверх градиента. */
+.composer {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 26px;
-  font-weight: 650;
-  letter-spacing: -0.04em;
+  width: 480px;
+  max-width: 100%;
+  padding: 14px 14px 14px 20px;
+  border: 1px solid #ffffff80;
+  border-radius: 16px;
+  background: #fffffff2;
+  box-shadow: 0 16px 40px #1a0b3340;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
 
-.mark {
-  width: 38px;
-  height: 38px;
+.placeholder {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #5a5766;
+  font-size: 15px;
+}
+
+.send {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 99px;
+  background: linear-gradient(118deg, #7b61ff, #ff6b5b);
+
+  /* Стрелка вверх рисуется бордюрами: иконочный шрифт ради декорации не нужен. */
   position: relative;
-  display: inline-grid;
-  place-items: center;
-  border-radius: 12px;
-  background: #c2adff;
-  box-shadow: 0 10px 40px rgba(150, 115, 255, 35%);
-}
 
-.stroke {
-  position: absolute;
-  width: 19px;
-  height: 5px;
-  border-radius: 999px;
-  background: #17121e;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 9px;
+    height: 9px;
+    border-top: 2px solid #fff;
+    border-left: 2px solid #fff;
+    transform: translateY(2px) rotate(45deg);
+  }
 
-  &:last-child {
-    transform: rotate(90deg);
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 2px;
+    height: 15px;
+    border-radius: 2px;
+    background: #fff;
   }
 }
 
-.promise {
-  margin-block: auto;
-  max-width: 430px;
-
-  h1 {
-    margin: 20px 0 22px;
-    font-size: clamp(42px, 4.2vw, 62px);
-    line-height: 0.98;
-    letter-spacing: -0.06em;
-    font-weight: 560;
-
-    em {
-      color: #c2adff;
-      font-style: normal;
-    }
-  }
-
-  p {
-    max-width: 390px;
-    margin: 0;
-    color: rgba(245, 240, 255, 68%);
-    font-size: 17px;
-    line-height: 1.55;
-  }
-}
-
-.eyebrow {
-  color: rgba(245, 240, 255, 52%);
-  font-size: 12px;
-  font-weight: 650;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.trust {
+.proof {
   display: flex;
   align-items: center;
-  gap: 10px;
-  color: rgba(245, 240, 255, 55%);
-  font-size: 13px;
+  gap: 11px;
+  padding-top: 6px;
+  color: #fffffff2;
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.trustDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #65d6a6;
-  box-shadow: 0 0 0 5px rgba(101, 214, 166, 10%);
-}
+.avatars {
+  position: relative;
+  display: block;
+  width: 80px;
+  height: 28px;
 
-:global(body.mobile) {
-  .panel {
-    width: auto;
-    min-height: auto;
-    padding: 24px 20px 8px;
+  i {
+    position: absolute;
+    top: 0;
+    width: 28px;
+    height: 28px;
+    border: 2px solid #fff;
+    border-radius: 50%;
   }
 
-  .wordmark {
-    font-size: 22px;
+  i:nth-child(1) {
+    left: 0;
+    background: #ffd37a;
   }
 
-  .mark {
-    width: 34px;
-    height: 34px;
+  i:nth-child(2) {
+    left: 17px;
+    background: #8fd3ff;
   }
 
-  .promise,
-  .trust {
-    display: none;
+  i:nth-child(3) {
+    left: 34px;
+    background: #ff9ac1;
+  }
+
+  i:nth-child(4) {
+    left: 51px;
+    background: #b6f0c0;
   }
 }

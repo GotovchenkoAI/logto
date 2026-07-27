@@ -1,101 +1,169 @@
 @use '@/shared/scss/underscore' as _;
 
-/* Main Layout */
+/*
+ * Экран входа по кадрам dSbY2 / ZXElN (полный экран) и k8Guy / abe92 (попап).
+ *
+ * Носитель один, различие — ширина. Полный экран: форма слева, градиентная
+ * панель 680px справа. Попап: окно ~460px, панели нет. Отдельной «попап-темы»
+ * не заводим — попап это просто узкий вьюпорт, и правило ширины даёт оба кадра.
+ *
+ * Тема следует за системной, как во фронте: переключателя нет, ручное
+ * переопределение — data-theme на <html>. Значения совпадают с apps/web/app/tokens.css,
+ * иначе вход и кабинет разъедутся по цвету.
+ */
+
 .viewBox {
   position: absolute;
   inset: 0;
   overflow: auto;
-  background:
-    radial-gradient(circle at 18% 18%, rgba(113, 75, 204, 18%), transparent 32%),
-    radial-gradient(circle at 70% 105%, rgba(86, 57, 143, 14%), transparent 38%),
-    #0b0910;
+
+  --djinn-ink: #1a1b1f;
+  --djinn-sec: #585d68;
+  --djinn-muted: #9296a1;
+  --djinn-line: #e4e4ea;
+  --djinn-divider: #eaebef;
+  --djinn-surface: #fff;
+  --djinn-inset: #f6f6f9;
+  --djinn-page: #fff;
+  --djinn-violet: #7b61ff;
+  --djinn-coral: #ff6b5b;
+  --djinn-link: #6d53e0;
+  --djinn-grad: linear-gradient(118deg, var(--djinn-violet), var(--djinn-coral));
+
+  background: var(--djinn-page);
+  color: var(--djinn-ink);
+}
+
+@media (prefers-color-scheme: dark) {
+  .viewBox {
+    --djinn-ink: #eef0f5;
+    --djinn-sec: #aeb4c2;
+    --djinn-muted: #828c9e;
+    --djinn-line: #ffffff1f;
+    --djinn-divider: #ffffff14;
+    --djinn-surface: #22262f;
+    --djinn-inset: #ffffff12;
+    --djinn-page: #141620;
+    --djinn-link: #bba9ff;
+  }
+}
+
+:global(html[data-theme='dark']) .viewBox {
+  --djinn-ink: #eef0f5;
+  --djinn-sec: #aeb4c2;
+  --djinn-muted: #828c9e;
+  --djinn-line: #ffffff1f;
+  --djinn-divider: #ffffff14;
+  --djinn-surface: #22262f;
+  --djinn-inset: #ffffff12;
+  --djinn-page: #141620;
+  --djinn-link: #bba9ff;
+}
+
+:global(html[data-theme='light']) .viewBox {
+  --djinn-ink: #1a1b1f;
+  --djinn-sec: #585d68;
+  --djinn-muted: #9296a1;
+  --djinn-line: #e4e4ea;
+  --djinn-divider: #eaebef;
+  --djinn-surface: #fff;
+  --djinn-inset: #f6f6f9;
+  --djinn-page: #fff;
+  --djinn-link: #6d53e0;
 }
 
 .container {
   min-height: 100%;
   @include _.flex-row;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  gap: clamp(44px, 7vw, 96px);
-}
-
-.brandColumn {
-  flex: 0 1 auto;
 }
 
 .main {
   @include _.flex_column;
-  --color-type-primary: #f5f2fb;
-  --color-type-secondary: #9f99ad;
-  --color-type-disable: rgba(245, 242, 251, 35%);
-  --color-type-link: #c2adff;
-  --color-line-divider: rgba(245, 242, 251, 11%);
-  --color-line-border: #50495c;
-  --color-line-border-transparent: rgba(245, 242, 251, 18%);
-  --color-bg-body: #15121b;
-  --color-bg-float: #15121b;
-  --color-bg-float-overlay: #1d1925;
-  --color-bg-layer-1: #1d1925;
-  --color-bg-layer-2: #24202c;
-  --color-bg-state-unselected: #2b2634;
-  --color-bg-state-disabled: rgba(245, 242, 251, 9%);
-  --color-brand-default: #aa8df8;
-  --color-brand-hover: #baa2ff;
-  --color-brand-pressed: #9675ee;
-  --color-brand-loading: #8c6ce1;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  padding: 0 80px;
+
+  /* Палитра Logto тянется к нашей: иначе формы внутри Outlet останутся чужими. */
+  --color-type-primary: var(--djinn-ink);
+  --color-type-secondary: var(--djinn-sec);
+  --color-type-disable: var(--djinn-muted);
+  --color-type-link: var(--djinn-link);
+  --color-line-divider: var(--djinn-divider);
+  --color-line-border: var(--djinn-line);
+  --color-line-border-transparent: var(--djinn-line);
+  --color-bg-body: var(--djinn-page);
+  --color-bg-float: var(--djinn-surface);
+  --color-bg-float-overlay: var(--djinn-surface);
+  --color-bg-layer-1: var(--djinn-surface);
+  --color-bg-layer-2: var(--djinn-inset);
+  --color-bg-state-unselected: var(--djinn-inset);
+  --color-bg-state-disabled: var(--djinn-inset);
+  --color-brand-default: var(--djinn-violet);
+  --color-brand-hover: #8f79ff;
+  --color-brand-pressed: #6a51e6;
+  --color-brand-loading: #7b61ffcc;
+}
+
+/* Обёртка формы: 400px в кадре полного экрана. */
+.main > * {
+  width: 400px;
+  max-width: 100%;
+}
+
+.brandColumn {
+  flex: 0 0 auto;
+  display: flex;
+}
+
+/*
+ * Панель уходит первой: ниже 1024px кадр полного экрана уже не собирается,
+ * а форма остаётся читаемой. Это же правило даёт попап-кадр без отдельной ветки.
+ */
+@media only screen and (max-width: 1024px) {
+  .brandColumn {
+    display: none;
+  }
+
+  .main {
+    padding: 0 40px;
+  }
+}
+
+/* Попап (k8Guy / abe92): окно 460px, поля 30/34, вертикальный ритм плотнее. */
+@media only screen and (max-width: 620px) {
+  .main {
+    padding: 30px 34px;
+    justify-content: flex-start;
+  }
+
+  .main > * {
+    width: 100%;
+  }
 }
 
 :global(body.mobile) {
-  .viewBox {
-    background: #0b0910;
-  }
-
   .container {
-    min-height: 100%;
-    display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
-    gap: 0;
     padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .brandColumn {
+    display: none;
   }
 
   .main {
     flex: 1;
     align-self: stretch;
-    padding: _.unit(4) _.unit(5);
-    position: relative;
-    background: transparent;
-  }
-}
-
-:global(body.desktop) {
-  .container {
-    padding: 40px;
+    padding: 30px 20px;
+    justify-content: flex-start;
   }
 
-  .main {
-    width: 480px;
-    min-height: 540px;
-    position: relative;
-    padding: 40px;
-    border: 1px solid rgba(238, 229, 255, 9%);
-    border-radius: 28px;
-    background: rgba(21, 18, 27, 94%);
-    box-shadow: 0 30px 90px rgba(0, 0, 0, 34%);
-    backdrop-filter: blur(24px);
-  }
-
-  @media only screen and (max-width: 580px) {
-    .main {
-      align-self: stretch;
-      width: auto;
-    }
-  }
-
-  @media only screen and (max-width: 960px) {
-    .brandColumn {
-      display: none;
-    }
+  .main > * {
+    width: 100%;
   }
 }
