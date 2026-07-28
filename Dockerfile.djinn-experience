@@ -14,12 +14,26 @@ COPY . .
 RUN --mount=type=cache,id=djinn-logto-pnpm,target=/root/.local/share/pnpm/store \
   pnpm install --frozen-lockfile
 RUN pnpm --filter @logto/experience... build
+RUN pnpm --filter @logto/core... build
 
-# The final runtime stays the exact official Logto release. Only the compiled Experience bundle
-# and its user-facing phrase pack are overlaid, so this fork cannot accidentally replace the
-# provider's protocol/session engine.
+# The runtime is the official Logto release with our compiled packages overlaid.
+#
+# Experience bundle and phrases: the user-facing screens.
+#
+# Core: added deliberately and only for one reason — the sign-in screen is shown in a modal on
+# our own site, and permission to frame it lives in a response header that core assembles
+# (`koa-security-headers`). There is no configuration hook for it upstream.
+#
+# This widens the fork: the protocol and session engine now also comes from our build, not from
+# the provider's. Both are built from the same 1.41.0 source as the base image, so the overlay is
+# version-matched — but a version bump must now move `LOGTO_BASE_IMAGE` and this tree together.
 FROM ${LOGTO_BASE_IMAGE}
 COPY --from=experience-builder /src/logto/packages/experience/dist \
   /etc/logto/packages/experience/dist
 COPY --from=experience-builder /src/logto/packages/phrases-experience/lib \
   /etc/logto/packages/phrases-experience/lib
+# Собранное ядро кладём начисто: имена чанков содержат хеш, и `COPY` поверх старой сборки
+# оставил бы мусор от предыдущей версии рядом с новой.
+RUN rm -rf /etc/logto/packages/core/build
+COPY --from=experience-builder /src/logto/packages/core/build \
+  /etc/logto/packages/core/build
