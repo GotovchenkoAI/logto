@@ -16,7 +16,6 @@ permissions:
 
 env:
   IMAGE_NAME: ghcr.io/gotovchenkoai/logto
-  LOGTO_BASE_IMAGE: ghcr.io/logto-io/logto:1.41.0@sha256:7f79547e3d1fe569a3ecae757968a7cfc579687aa8164eec35113c0adc983c5b
 
 jobs:
   publish:
@@ -53,14 +52,12 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          file: Dockerfile.djinn-experience
+          file: Dockerfile
           platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           annotations: ${{ steps.meta.outputs.annotations }}
-          build-args: |
-            LOGTO_BASE_IMAGE=${{ env.LOGTO_BASE_IMAGE }}
 
       - name: Report published artifact
         shell: bash

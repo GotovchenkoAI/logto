@@ -7,17 +7,23 @@ copy.
 ## Upstream baseline
 
 - repository: `https://github.com/logto-io/logto`
-- tag: `v1.41.0`
-- commit: `91e55698a42f99438cd41ec2b16a1fc51dbdab8a`
+- branch: `master`, unreleased (the last tag it carries is `v1.41.0`)
+- commit: `6c005a2ed74c76756e1ede9daceea46770aa1c80`
 
-The production image must be built from this repository and pinned by digest. Upgrades start from a
-fresh upstream tag, replay the small Experience-only patch, and rerun the Djinn one-code browser
+The production image must be built from this repository and pinned by digest. Upgrades merge a
+fresh upstream point, keep the Experience-only patch on top, and rerun the Djinn one-code browser
 contract before promotion.
 
-The release build uses `Dockerfile.djinn-experience`. `LOGTO_BASE_IMAGE` is mandatory and must be
-the official baseline with its resolved digest, for example
-`ghcr.io/logto-io/logto:1.41.0@sha256:…`. The final stage overlays only the compiled Experience
-bundle and its user-facing phrase pack on that provider image.
+The release build uses the upstream `Dockerfile` and produces a self-contained image: every
+package, including core and its dependencies, comes from this tree.
+
+Previously the release overlaid our compiled Experience bundle onto the official
+`ghcr.io/logto-io/logto:1.41.0` image. That stopped being safe once core moved past the tag —
+upstream took core to koa 3 and oidc-provider v9, and the official image still ships the
+dependencies and sibling packages of 1.41.0. Overlaying a newer core onto them would leave the
+build version-mismatched at runtime and short of the newer database migrations. Building the whole
+image removes the mismatch, at the cost of a longer CI build and an image we own end to end rather
+than a thin layer on the provider's.
 
 ## Boundary
 
@@ -41,3 +47,7 @@ The unified email flow must not generate, inspect or verify OTP values itself. I
 Logto's typed `user.user_not_exist` outcome and invoke Logto's existing
 `registerWithVerifiedIdentifier` action. Terms acceptance remains enforced by Logto before account
 creation.
+
+One change sits outside Experience on purpose: `packages/core/src/middleware/koa-security-headers.ts`.
+The sign-in screen is shown in a modal on our own site, and permission to frame it lives in a
+response header that core assembles; upstream has no configuration hook for it.

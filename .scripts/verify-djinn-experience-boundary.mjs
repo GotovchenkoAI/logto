@@ -1,7 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 
-const baseline = '91e55698a42f99438cd41ec2b16a1fc51dbdab8a';
+const baseline = '6c005a2ed74c76756e1ede9daceea46770aa1c80';
 const output = (args) => execFileSync('git', args, { encoding: 'utf8' }).trim();
 const changed = new Set([
   ...output(['diff', '--name-only', baseline, '--']).split('\n'),
@@ -11,7 +11,6 @@ changed.delete('');
 
 const allowed = (path) =>
   path === 'DJINN_UPSTREAM.md' ||
-  path === 'Dockerfile.djinn-experience' ||
   path === 'package.json' ||
   path === '.github/workflows/publish-djinn-experience.yml' ||
   path === '.scripts/verify-djinn-experience-boundary.mjs' ||
@@ -28,25 +27,6 @@ const allowed = (path) =>
 const forbidden = [...changed].filter((path) => !allowed(path));
 if (forbidden.length > 0) {
   throw new Error(`Djinn fork crossed the Experience-only boundary:\n${forbidden.join('\n')}`);
-}
-
-const dockerfile = readFileSync('Dockerfile.djinn-experience', 'utf8');
-if (!dockerfile.includes('ARG LOGTO_BASE_IMAGE')) {
-  throw new Error('The official Logto runtime image must be supplied explicitly');
-}
-const builderCopies = dockerfile
-  .split('\n')
-  .filter((line) => line.startsWith('COPY --from=experience-builder'));
-if (
-  builderCopies.length !== 2 ||
-  !dockerfile.includes('/src/logto/packages/experience/dist') ||
-  !dockerfile.includes('/etc/logto/packages/experience/dist') ||
-  !dockerfile.includes('/src/logto/packages/phrases-experience/lib') ||
-  !dockerfile.includes('/etc/logto/packages/phrases-experience/lib')
-) {
-  throw new Error(
-    'The release image must overlay only the compiled Experience bundle and phrase pack'
-  );
 }
 
 const brand = readFileSync(
