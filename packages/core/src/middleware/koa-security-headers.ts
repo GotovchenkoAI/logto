@@ -55,14 +55,17 @@ const getOssServerOrigins = (): string[] => {
 const getDjinnFrameAncestors = (): string[] =>
   (process.env.DJINN_AUTH_WEB_ORIGIN ?? '')
     .split(',')
-    .map((origin) => origin.trim())
-    .filter((origin) => {
+    .map((value) => {
+      // Приводим к origin, а не отбраковываем непохожее: «https://site.ru/» с
+      // косой чертой на конце — валидный адрес и обычная опечатка в env, а
+      // молчаливый отказ от него выглядит как «фрейминг просто не работает».
       try {
-        return new URL(origin).origin === origin;
+        return new URL(value.trim()).origin;
       } catch {
-        return false;
+        return '';
       }
-    });
+    })
+    .filter(Boolean);
 
 type SecurityHeaderSettings = {
   readonly basicSecurityHeaderSettings: HelmetOptions;
