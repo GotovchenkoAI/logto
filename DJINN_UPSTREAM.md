@@ -8,7 +8,7 @@ copy.
 
 - repository: `https://github.com/logto-io/logto`
 - branch: `master`, unreleased (the last tag it carries is `v1.41.0`)
-- commit: `6c005a2ed74c76756e1ede9daceea46770aa1c80`
+- commit: `defa67c4c5bc22b2f9c3d57b4408c8334665a5d6`
 
 The production image must be built from this repository and pinned by digest. Upgrades merge a
 fresh upstream point, keep the Experience-only patch on top, and rerun the Djinn one-code browser
@@ -51,3 +51,16 @@ creation.
 One change sits outside Experience on purpose: `packages/core/src/middleware/koa-security-headers.ts`.
 The sign-in screen is shown in a modal on our own site, and permission to frame it lives in a
 response header that core assembles; upstream has no configuration hook for it.
+
+## Reading the boundary
+
+Upstream is merged into this branch rather than replayed onto it, so the diff against upstream is
+exactly the Djinn patch:
+
+```bash
+git fetch upstream master
+git diff --name-only upstream/master
+```
+
+Everything that lists should be Experience, Russian phrases, or the one core file named above.
+Anything else is the fork quietly widening, and it will make the next upstream merge harder.

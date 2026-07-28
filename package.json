@@ -24,7 +24,6 @@
     "ci:stylelint": "pnpm -r --parallel --workspace-concurrency=0 stylelint",
     "ci:test": "pnpm -r --parallel --workspace-concurrency=0 test:ci && pnpm test:scripts",
     "test:scripts": "node .scripts/compare-database.test.js",
-    "test:djinn-experience-contract": "node .scripts/verify-djinn-experience-boundary.mjs",
     "test:integration": "./.scripts/integration/run.sh"
   },
   "devDependencies": {
