@@ -37,6 +37,33 @@ const getOssServerOrigins = (): string[] => {
   }
 };
 
+/**
+ * Origin-ы, которым разрешено показывать экран входа во фрейме.
+ *
+ * Вход у нас — модалка над сайтом, а не отдельное окно: окно операционной
+ * системы уходит за браузер, пока человек ищет код в почте, и обратно его
+ * приходится искать глазами.
+ *
+ * Список строгий и поимённый. `*` или `https:` здесь означали бы «любой сайт
+ * может нарисовать нашу форму входа поверх своей» — это кликджекинг ровно того
+ * места, ради которого он и делается.
+ *
+ * Значение приходит из `DJINN_AUTH_WEB_ORIGIN` — той же переменной, которой уже
+ * описан origin сайта для API. Одно место истины: разъехавшиеся списки
+ * происхождений — это отказ во фрейминге, который никто не заметит до стенда.
+ */
+const getDjinnFrameAncestors = (): string[] =>
+  (process.env.DJINN_AUTH_WEB_ORIGIN ?? '')
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter((origin) => {
+      try {
+        return new URL(origin).origin === origin;
+      } catch {
+        return false;
+      }
+    });
+
 type SecurityHeaderSettings = {
   readonly basicSecurityHeaderSettings: HelmetOptions;
   readonly consoleSecurityHeaderSettings: HelmetOptions;
@@ -178,8 +205,8 @@ const createSecurityHeaderSettings = (tenantId: string): SecurityHeaderSettings 
           connectSrc: appendCustomSources(experienceConnectSource, customUiCsp.connectSrc),
           // WARNING (high risk): Need to allow self-hosted terms of use page loaded in an iframe
           frameSrc: ["'self'", 'https:', gsiOrigin],
-          // Allow being loaded by console preview iframe
-          frameAncestors: ["'self'", ...adminOrigins],
+          // Allow being loaded by console preview iframe and by our own site's sign-in modal
+          frameAncestors: ["'self'", ...adminOrigins, ...getDjinnFrameAncestors()],
           defaultSrc: ["'self'", gsiOrigin],
         },
       },
