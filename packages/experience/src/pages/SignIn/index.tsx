@@ -13,7 +13,6 @@ import GoogleOneTap from '@/components/GoogleOneTap';
 import TextLink from '@/components/TextLink';
 import SocialSignInList from '@/containers/SocialSignInList';
 import TermsAndPrivacyCheckbox from '@/containers/TermsAndPrivacyCheckbox';
-import TermsAndPrivacyLinks from '@/containers/TermsAndPrivacyLinks';
 import useNavigateWithPreservedSearchParams from '@/hooks/use-navigate-with-preserved-search-params';
 import { useSieMethods } from '@/hooks/use-sie';
 import useTerms from '@/hooks/use-terms';
@@ -87,7 +86,6 @@ const SignInFooters = () => {
 
 const SignIn = () => {
   const { signInMethods, socialConnectors, signInMode } = useSieMethods();
-  const { agreeToTermsPolicy } = useTerms();
   const [params] = useSearchParams();
 
   if (!signInMode) {
@@ -120,12 +118,6 @@ const SignIn = () => {
           <SignInFooters />
         </SingleSignOnFormModeContextProvider>
       </WebAuthnContextProvider>
-      {
-        // Only show terms and privacy links for sign in page if the agree to terms policy is `Automatic` or `ManualRegistrationOnly`
-        agreeToTermsPolicy !== AgreeToTermsPolicy.Manual && (
-          <TermsAndPrivacyLinks className={styles.terms} />
-        )
-      }
     </DjinnSignInLayout>
   );
 };

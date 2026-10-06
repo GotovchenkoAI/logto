@@ -66,6 +66,19 @@
   line-height: 1.5;
 }
 
+/* Ссылка тихая, как сама строка: подчёркивание проявляется под курсором и в фокусе. */
+.footLink {
+  color: var(--djinn-sec);
+  text-decoration: none;
+  transition: color 160ms ease;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--djinn-link);
+    text-decoration: underline;
+  }
+}
+
 @media only screen and (min-width: 1025px) {
   .brand {
     position: absolute;
@@ -78,8 +91,7 @@
     position: absolute;
     bottom: 32px;
     left: var(--djinn-gutter);
-    /* Тихая строка — одна линия на десктопе: правый отступ меньше поля колонки. */
-    right: 24px;
+    right: var(--djinn-gutter);
     width: auto;
     margin: 0;
   }

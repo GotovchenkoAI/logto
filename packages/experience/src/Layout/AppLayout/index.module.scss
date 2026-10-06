@@ -208,7 +208,8 @@
   .main {
     flex: 1;
     align-self: stretch;
-    padding: 30px 20px;
+    /* Поля как у узкого окна (34px): 20px прижимали колонку к краю телефона. */
+    padding: 30px 34px;
     justify-content: flex-start;
   }
 

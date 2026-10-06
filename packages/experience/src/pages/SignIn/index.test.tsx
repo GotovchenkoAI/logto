@@ -91,8 +91,35 @@ describe('<SignIn />', () => {
       mockSignInExperienceSettings.socialConnectors.length
     );
 
-    expect(queryByText('description.terms_of_use')).not.toBeNull();
-    expect(queryByText('description.privacy_policy')).not.toBeNull();
+    expect(queryByText('Условия')).not.toBeNull();
+    expect(queryByText('Конфиденциальность')).not.toBeNull();
+  });
+
+  /*
+   * Ссылки нижней строки берутся из настроек sign-in experience: у каждого стенда свой адрес
+   * кабинета. Открываются в новой вкладке — уход со страницы сбросил бы начатый вход.
+   */
+  test('ссылки на условия и политику ведут по адресам из настроек', () => {
+    const { getByRole } = renderSignIn({
+      termsOfUseUrl: 'https://cabinet.example/terms',
+      privacyPolicyUrl: 'https://cabinet.example/privacy',
+    });
+
+    for (const [name, href] of [
+      ['Условия', 'https://cabinet.example/terms'],
+      ['Конфиденциальность', 'https://cabinet.example/privacy'],
+    ] as const) {
+      const link = getByRole('link', { name });
+      expect(link.getAttribute('href')).toBe(href);
+      expect(link.getAttribute('target')).toBe('_blank');
+    }
+  });
+
+  test('без адресов в настройках ссылок нет', () => {
+    const { queryByRole } = renderSignIn({ termsOfUseUrl: null, privacyPolicyUrl: null });
+
+    expect(queryByRole('link', { name: 'Условия' })).toBeNull();
+    expect(queryByRole('link', { name: 'Конфиденциальность' })).toBeNull();
   });
 
   test('does not expose a separate create-account entry in the unified email flow', () => {
