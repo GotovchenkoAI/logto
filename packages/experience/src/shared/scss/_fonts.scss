@@ -1,12 +1,12 @@
 /* Typography Foundation */
 
 /*
- * Inter Variable впереди системного стека: @font-face объявлены в
+ * Onest впереди системного стека — шрифт кабинета; @font-face объявлены в
  * scss/djinn-fonts.scss. Системные шрифты остаются фоллбеком на случай, если
  * woff2 не доедет — экран входа обязан читаться и без загруженного шрифта.
  */
 $font-family:
-  'Inter Variable',
+  'Onest Variable',
   -apple-system,
   system-ui,
   'BlinkMacSystemFont',
@@ -15,10 +15,9 @@ $font-family:
   'Arial',
   sans-serif;
 
-/* Заголовочное семейство: плотнее и с меньшим апертурой, как в кадрах. */
+/* Заголовки — тот же Onest, как в кабинете: второго семейства у продукта нет. */
 $font-family-display:
-  'Inter Tight Variable',
-  'Inter Variable',
+  'Onest Variable',
   -apple-system,
   system-ui,
   sans-serif;

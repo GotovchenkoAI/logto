@@ -1,4 +1,3 @@
-import { Theme } from '@logto/schemas';
 import { conditionalString } from '@silverhand/essentials';
 import classNames from 'classnames';
 import i18next from 'i18next';
@@ -6,16 +5,10 @@ import { useContext } from 'react';
 import { Helmet } from 'react-helmet';
 
 import PageContext from '@/Providers/PageContextProvider/PageContext';
-import defaultAppleTouchLogo from '@/shared/assets/apple-touch-icon.png';
-import defaultFavicon from '@/shared/assets/favicon.png';
-import { type SignInExperienceResponse } from '@/types';
+import djinnAppleTouchIcon from '@/shared/assets/djinn-apple-touch-icon.png';
+import djinnIcon from '@/shared/assets/djinn-icon.svg';
 
 import styles from './index.module.scss';
-
-const themeToFavicon = Object.freeze({
-  [Theme.Light]: 'favicon',
-  [Theme.Dark]: 'darkFavicon',
-} as const satisfies Record<Theme, keyof SignInExperienceResponse['branding']>);
 
 /**
  * User React Helmet to manage html and body attributes
@@ -33,14 +26,16 @@ const themeToFavicon = Object.freeze({
 
 const AppMeta = () => {
   const { experienceSettings, theme, platform, isPreview } = useContext(PageContext);
-  const favicon =
-    experienceSettings?.branding[themeToFavicon[theme]] ?? experienceSettings?.branding.favicon;
 
   return (
     <Helmet>
       <html lang={i18next.language} dir={i18next.dir()} data-theme={theme} />
-      <link rel="shortcut icon" href={favicon ?? defaultFavicon} />
-      <link rel="apple-touch-icon" href={favicon ?? defaultAppleTouchLogo} sizes="180x180" />
+      {/*
+        Значок вкладки — значок кабинета, всегда. Как и знак на экране, он не берётся из настроек
+        консоли: вход — часть продукта, и вкладка не должна менять значок при переходе ко входу.
+      */}
+      <link rel="icon" type="image/svg+xml" href={djinnIcon} />
+      <link rel="apple-touch-icon" href={djinnAppleTouchIcon} sizes="180x180" />
       {experienceSettings?.customCss && <style>{experienceSettings.customCss}</style>}
       <body
         className={classNames(

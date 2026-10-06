@@ -109,11 +109,9 @@ const SignIn = () => {
 
   return (
     <DjinnSignInLayout
-      heading="Добро пожаловать"
-      legal="Продолжая, вы соглашаетесь с условиями и политикой конфиденциальности"
+      heading="Вход в Готовченко"
       pageTitle="description.sign_in_to_your_account"
-      privacy="Материалы хранятся в России. Удалить их можно в любой момент одной кнопкой."
-      subheading="Готовые юридические документы за минуты. Вход и регистрация — в одном окне."
+      subheading={'Пришлём на почту код для входа.\nНет аккаунта — создадим.'}
     >
       <GoogleOneTap context="signin" />
       <WebAuthnContextProvider>

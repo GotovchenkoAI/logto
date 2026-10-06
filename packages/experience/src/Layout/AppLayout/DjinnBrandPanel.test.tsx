@@ -10,30 +10,21 @@ const renderAt = (pathname: string) =>
     </MemoryRouter>
   );
 
-describe('Djinn Experience brand boundary', () => {
-  it('renders product value without owning authentication protocol', () => {
-    const { getByText, queryByText } = renderAt('/sign-in');
+describe('DjinnBrandPanel', () => {
+  it('знает шаг: почта на входе, код — на экране кода', () => {
+    const email = renderAt('/sign-in').container.querySelector('aside');
+    const code = renderAt('/sign-in/verification-code').container.querySelector('aside');
 
-    expect(getByText('Готовый документ — из пары фраз')).not.toBeNull();
-    expect(getByText(/12 400\+ уже собрали документ/)).not.toBeNull();
-    // Граница прежняя: протокол — дело рантайма, на экране ему места нет.
-    expect(queryByText(/OAuth|OIDC|OTP|Logto/)).toBeNull();
+    expect(email?.dataset.step).toBe('email');
+    expect(code?.dataset.step).toBe('code');
+    expect(email?.textContent).not.toBe(code?.textContent);
   });
 
-  it('keeps the illustrated composer out of the tab order', () => {
+  it('декорация вне порядка табуляции и скрыта от скринридера', () => {
     const { container } = renderAt('/sign-in');
 
-    // Композер — картинка обещания, а не поле. Живых полей в панели быть не должно:
-    // таб от почты обязан вести к кнопке входа, а не в декорацию.
-    expect(container.querySelectorAll('input, textarea, button')).toHaveLength(0);
-  });
-
-  it('confirms the letter was sent while the code is awaited', () => {
-    const { getByText, queryByText } = renderAt('/sign-in/verification-code');
-
-    // Пока человек ждёт письмо, единственный его вопрос — «дошло ли».
-    expect(getByText('Ещё пара секунд — и вы внутри')).not.toBeNull();
-    expect(getByText('Письмо отправлено')).not.toBeNull();
-    expect(queryByText('Готовый документ — из пары фраз')).toBeNull();
+    // Таб от почты обязан вести к кнопке входа, а не в картинку кабинета.
+    expect(container.querySelectorAll('input, textarea, button, a')).toHaveLength(0);
+    expect(container.querySelector('aside')?.getAttribute('aria-hidden')).toBe('true');
   });
 });

@@ -9,16 +9,19 @@
 
   /* Обёртка кадра держит ровно 28 между всеми блоками. */
   .inputField {
-    margin-bottom: 28px;
+    margin-bottom: 16px;
 
     &.withError {
       margin-bottom: _.unit(2);
     }
   }
 
+  /* Строка повтора — сразу под ячейками, по левому краю колонки. */
   .message {
-    font: var(--font-body-2);
+    margin-top: 0;
     color: var(--color-type-secondary);
+    font: var(--font-body-2);
+    font-size: 13px;
   }
 
   .message,
@@ -31,20 +34,6 @@
   .switch {
     margin-top: _.unit(6);
   }
-
-  /* Кнопка идёт сразу за боксами: их margin-bottom и есть зазор кадра. */
-  .continueButton {
-    margin-top: 0;
-  }
-}
-
-/* Строка повтора в кадре стоит по центру, а не по левому краю. */
-.form .message {
-  align-self: center;
-  width: auto;
-  margin-top: 28px;
-  text-align: center;
-  font-size: 13.5px;
 }
 
 .messageLead {
@@ -89,37 +78,3 @@
 }
 
 /* Возврат к вводу почты: последняя строка кадра. */
-.backToSignIn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  align-self: center;
-  width: auto;
-  margin-top: 28px;
-
-  /* Мишень заметно больше кегля: это последний шанс вернуться, если ошибся адресом. */
-  padding: 8px 12px;
-  border: none;
-  border-radius: 9px;
-  background: transparent;
-  color: var(--djinn-link);
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 120ms ease;
-
-  &:hover {
-    background: var(--djinn-accent-tint);
-  }
-
-  &:focus-visible {
-    background: var(--djinn-accent-tint);
-    outline: 2px solid #7b61ff;
-    outline-offset: 1px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    transition: none;
-  }
-}

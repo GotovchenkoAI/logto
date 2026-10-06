@@ -88,8 +88,8 @@ describe('IdentifierSignInForm', () => {
     jest.clearAllMocks();
   });
 
-  test('explains the unified email flow and offers to send one code', () => {
-    const { queryByText } = renderForm([
+  test('в потоке «только почта» — своё поле почты и своя кнопка отправки', () => {
+    const { getByLabelText, container, queryByText } = renderForm([
       {
         identifier: SignInIdentifier.Email,
         password: false,
@@ -98,14 +98,11 @@ describe('IdentifierSignInForm', () => {
       },
     ]);
 
-    /*
-     * Проверяем текст, который видит человек, а не ключи фраз: фразы приходят с
-     * сервера из собранного образа Logto, поэтому наш текст живёт в коде.
-     */
-    expect(queryByText(/аккаунт создастся автоматически/)).not.toBeNull();
-    expect(queryByText('Получить код')).not.toBeNull();
+    // Поле почты подписано для скринридера и ждёт именно почту.
+    expect(getByLabelText('Почта').getAttribute('type')).toBe('email');
+    // Отправка — нашей кнопкой по якорю, который ищет браузерный контракт входа.
+    expect(container.querySelectorAll('button[name=submit]')).toHaveLength(1);
     expect(queryByText('action.sign_in')).toBeNull();
-    expect(queryByText('action.enter_passcode')).toBeNull();
   });
 
   test('should show required error message when input is empty', async () => {

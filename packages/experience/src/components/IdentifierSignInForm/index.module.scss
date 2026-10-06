@@ -29,52 +29,108 @@
 }
 
 /*
- * Кадр «Экран · Вход»: подпись над полем, подсказка под ним.
- * Цвета — из --djinn-*, объявленных в AppLayout, поэтому следуют за темой.
+ * Поле почты с плавающей подписью (docs/specs/2026-10-06-login-screen-design.md в репозитории
+ * продукта). Подпись 12/14 и значение 16/20 — одна группа точно по середине поля высотой 54:
+ * по 8 сверху и снизу, 4 между ними; значок стоит на оси группы. Цвета — --djinn-* из AppLayout.
  */
-.djinnLabel {
-  margin-bottom: 10px;
-  color: var(--djinn-ink);
-  font-size: 13.5px;
-  font-weight: 600;
+.djinnField {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  height: 54px;
+  margin-bottom: 14px;
+  padding: 0 14px;
+  border: 1px solid var(--djinn-line);
+  border-radius: 12px;
+  background: var(--djinn-surface);
+  cursor: text;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+
+  &:focus-within {
+    border-color: var(--djinn-violet);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--djinn-violet) 18%, transparent);
+  }
 }
 
-/* Поле по кадру: рамка 1.5, радиус 11, поля 13/15, иконка почты слева. */
+.djinnFieldDanger,
+.djinnFieldDanger:focus-within {
+  border-color: var(--color-danger-default, #e5484d);
+}
+
+/* Значок над заливкой автозаполнения: при выборе подсказки браузера он не пропадает. */
+.djinnMail {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: var(--djinn-muted);
+  transition: color 160ms ease;
+
+  .djinnField:focus-within & {
+    color: var(--djinn-violet);
+  }
+}
+
 .djinnInput {
-  box-sizing: border-box;
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 13px 15px;
-  padding-inline-start: 42px;
-  border: 1.5px solid var(--djinn-line);
-  border-radius: 11px;
-  background-color: var(--djinn-surface);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239296a1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='4' width='20' height='16' rx='2'/%3E%3Cpath d='m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: 15px center;
-  background-size: 17px 17px;
+  flex: 1;
+  align-self: stretch;
+  min-width: 0;
+  padding: 26px 0 8px;
+  border: none;
+  outline: none;
+  background: transparent;
   color: var(--djinn-ink);
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
+  line-height: 20px;
 
-  &::placeholder {
-    color: var(--djinn-muted);
+  /* Пустое поле без фокуса: подпись стоит по центру, значения нет — отступы не нужны. */
+  &:not(:focus):placeholder-shown {
+    padding: 0;
   }
 
-  &:focus {
-    border-color: #7b61ff;
-    outline: none;
+  /* Автозаполнение — цвета бумаги и чернил, а не голубая заливка браузера. */
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--djinn-ink);
+    box-shadow: 0 0 0 1000px var(--djinn-surface) inset;
+    caret-color: var(--djinn-ink);
+    transition: background-color 9999s;
   }
 }
 
-.djinnHint {
-  /*
-   * Подсказка принадлежит полю, поэтому сверху прижата к нему, а снизу держит
-   * воздух: без него кнопка читается как часть поля, а не как отдельное действие.
-   */
-  margin-top: -2px;
-  margin-bottom: 20px;
-  color: var(--djinn-sec);
-  font-size: 13px;
-  line-height: 1.5;
+.djinnFloat {
+  position: absolute;
+  left: 42px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--djinn-muted);
+  font-size: 16px;
+  line-height: 14px;
+  pointer-events: none;
+  transition: top 160ms ease, font-size 160ms ease, transform 160ms ease, color 160ms ease;
+
+  .djinnInput:focus + &,
+  .djinnInput:not(:placeholder-shown) + &,
+  .djinnInput:-webkit-autofill + & {
+    top: 8px;
+    transform: none;
+    font-size: 12px;
+  }
+
+  .djinnInput:focus + & {
+    color: var(--djinn-link);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .djinnField,
+  .djinnMail,
+  .djinnFloat {
+    transition: none;
+  }
 }

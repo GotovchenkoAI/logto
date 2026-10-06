@@ -120,8 +120,6 @@ const IdentifierSignInForm = ({ className, autoFocus, signInMethods }: Props) =>
 
   return (
     <form className={classNames(styles.form, className)} onSubmit={onSubmitHandler}>
-      {isUnifiedEmailCodeFlow && <div className={styles.djinnLabel}>Email</div>}
-
       <Controller
         control={control}
         name="identifier"
@@ -146,19 +144,42 @@ const IdentifierSignInForm = ({ className, autoFocus, signInMethods }: Props) =>
            * здесь всё равно не работает: тип ровно один.
            */
           isUnifiedEmailCodeFlow ? (
-            <input
-              autoComplete="email"
-              autoFocus={autoFocus}
-              className={styles.djinnInput}
-              name={field.name}
-              placeholder="you@example.com"
-              type="email"
-              value={field.value.value}
-              onBlur={field.onBlur}
-              onChange={({ target: { value } }) => {
-                field.onChange({ type: SignInIdentifier.Email, value });
-              }}
-            />
+            /*
+             * Поле с плавающей подписью: «Почта» стоит в поле и при фокусе или вводе поднимается
+             * к верхней кромке. Подпись и значение — одна группа по середине поля. `placeholder`
+             * из пробела нужен селектору `:placeholder-shown`: по нему подпись знает, пусто ли поле.
+             */
+            <label
+              className={classNames(styles.djinnField, errorMessage && styles.djinnFieldDanger)}
+            >
+              <svg
+                aria-hidden="true"
+                className={styles.djinnMail}
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.7"
+                viewBox="0 0 24 24"
+              >
+                <rect height="14" rx="2.5" width="18" x="3" y="5" />
+                <path d="m4 7 8 6 8-6" />
+              </svg>
+              <input
+                autoComplete="email"
+                autoFocus={autoFocus}
+                className={styles.djinnInput}
+                name={field.name}
+                placeholder=" "
+                type="email"
+                value={field.value.value}
+                onBlur={field.onBlur}
+                onChange={({ target: { value } }) => {
+                  field.onChange({ type: SignInIdentifier.Email, value });
+                }}
+              />
+              <span className={styles.djinnFloat}>Почта</span>
+            </label>
           ) : (
             <SmartInputField
               autoFocus={autoFocus}
@@ -172,12 +193,6 @@ const IdentifierSignInForm = ({ className, autoFocus, signInMethods }: Props) =>
           )
         }
       />
-
-      {isUnifiedEmailCodeFlow && !errorMessage && (
-        <div className={styles.djinnHint}>
-          Введите email — пришлём код. Если вы здесь впервые, аккаунт создастся автоматически.
-        </div>
-      )}
 
       {errorMessage && <ErrorMessage className={styles.formErrors}>{errorMessage}</ErrorMessage>}
 

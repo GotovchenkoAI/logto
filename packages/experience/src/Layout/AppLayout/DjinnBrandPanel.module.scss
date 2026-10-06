@@ -1,202 +1,153 @@
 /*
- * Правая панель по кадру «Экран · Вход» → «Панель» (680px, поля 24).
- * Скрывается вместе с узким экраном и попапом — правило живёт в index.module.scss.
+ * Кабинет за стеклом. Цвета — --djinn-* из index.module.scss (токены бумаги кабинета).
+ *
+ * Подпись и кабинет — одна группа у нижнего края: подпись над кабинетом по его левому краю,
+ * воздух — сверху. Кабинет уходит за нижний и правый край: под композером пустого поля нет.
+ * Стекло лежит над кабинетом, но под подписью.
  */
 
 .panel {
-  width: 680px;
-  flex: 0 0 auto;
-  padding: 24px;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background: var(--djinn-panel);
+  border-left: 1px solid var(--djinn-line);
+}
+
+.stage {
+  position: absolute;
+  left: 9%;
+  right: -37%;
+  bottom: -1px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.caption {
+  position: relative;
+  z-index: 2;
+  max-width: 34rem;
+  margin: 0;
+  color: var(--djinn-ink);
+  font-family: 'Onest Variable', system-ui, sans-serif;
+  font-size: clamp(18px, 1.7vw, 24px);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  text-wrap: balance;
+
+  small {
+    display: block;
+    margin-top: 8px;
+    color: var(--djinn-sec);
+    font-size: 14px;
+    font-weight: normal;
+    letter-spacing: 0;
+    line-height: 1.5;
+  }
+}
+
+.cabinet {
+  overflow: hidden;
+  border: 1px solid var(--djinn-line);
+  border-bottom: none;
+  border-radius: 14px 14px 0 0;
+  background: var(--djinn-page);
+  box-shadow: 0 30px 80px var(--djinn-shadow);
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
 }
 
 /*
- * Mesh-градиент кадра приближён шестью радиальными пятнами по тем же опорным
- * точкам (2 колонки × 3 ряда). Радиальные градиенты рисуются один поверх
- * другого, поэтому порядок важен: светлые углы сверху, тёплый низ последним.
+ * Снимок по теме: те же правила темы, что у токенов. Ручная тема (`html[data-theme]`)
+ * специфичнее системной и потому её перебивает.
  */
-.gradient {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  padding: 56px;
-  border-radius: 28px;
-  background:
-    radial-gradient(120% 90% at 0% 0%, #ede9ff 0%, #ede9ff00 60%),
-    radial-gradient(120% 90% at 100% 0%, #dce6ff 0%, #dce6ff00 60%),
-    radial-gradient(120% 90% at 0% 50%, #7b61ff 0%, #7b61ff00 62%),
-    radial-gradient(120% 90% at 100% 50%, #5b6bff 0%, #5b6bff00 62%),
-    radial-gradient(130% 95% at 0% 100%, #ff5b9e 0%, #ff5b9e00 64%),
-    radial-gradient(130% 95% at 100% 100%, #ff6b4a 0%, #ff6b4a00 64%),
-    linear-gradient(160deg, #c9c2ff, #ff7a63);
+.cabinet .dark {
+  display: none;
 }
 
-.headline {
-  width: 440px;
-  max-width: 100%;
-  margin: 0;
-  color: #fff;
-  font-family: 'Inter Tight Variable', 'Inter Variable', system-ui, sans-serif;
-  font-size: 32px;
-  font-weight: 600;
-  letter-spacing: -0.8px;
-  line-height: 1.15;
-  text-align: center;
-}
-
-/* Иллюстрация композера: матовое стекло поверх градиента. */
-.composer {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 480px;
-  max-width: 100%;
-  padding: 14px 14px 14px 20px;
-  border: 1px solid #ffffff80;
-  border-radius: 16px;
-  background: #fffffff2;
-  box-shadow: 0 16px 40px #1a0b3340;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-.placeholder {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  color: #5a5766;
-  font-size: 15px;
-}
-
-.send {
-  flex: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 99px;
-  background: linear-gradient(118deg, #7b61ff, #ff6b5b);
-
-  /* Стрелка вверх рисуется бордюрами: иконочный шрифт ради декорации не нужен. */
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    margin: auto;
-    width: 9px;
-    height: 9px;
-    border-top: 2px solid #fff;
-    border-left: 2px solid #fff;
-    transform: translateY(2px) rotate(45deg);
+@media (prefers-color-scheme: dark) {
+  .cabinet .light {
+    display: none;
   }
 
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    margin: auto;
-    width: 2px;
-    height: 15px;
-    border-radius: 2px;
-    background: #fff;
+  .cabinet .dark {
+    display: block;
   }
 }
 
-/* Карточка «письмо ушло» на шаге кода: то же матовое стекло, что у композера. */
-.sent {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 480px;
-  max-width: 100%;
-  padding: 16px 20px;
-  border: 1px solid #ffffff80;
-  border-radius: 16px;
-  background: #fffffff2;
-  box-shadow: 0 16px 40px #1a0b3340;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
+:global(html[data-theme='dark']) .cabinet {
+  .light {
+    display: none;
+  }
 
-.sentIcon {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
-  background: #e8f6ee;
-  color: #2f9e63;
-
-  svg {
-    width: 20px;
-    height: 20px;
+  .dark {
+    display: block;
   }
 }
 
-.sentText {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  color: #5a5766;
-  font-size: 13.5px;
-  line-height: 1.4;
+:global(html[data-theme='light']) .cabinet {
+  .light {
+    display: block;
+  }
 
-  b {
-    color: #1a1b1f;
-    font-size: 14.5px;
-    font-weight: 600;
+  .dark {
+    display: none;
   }
 }
 
-.proof {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding-top: 6px;
-  color: #fffffff2;
-  font-size: 14px;
-  font-weight: 500;
+/* Стекло: размытие с холодной кромкой. На шаге кода проясняется — кабинет читается. */
+.glass {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: var(--djinn-glass);
+  box-shadow: inset 1px 0 0 var(--djinn-glass-edge);
+  backdrop-filter: blur(9px);
+  transition:
+    backdrop-filter 700ms ease,
+    background-color 700ms ease;
 }
 
-.avatars {
-  position: relative;
-  display: block;
-  width: 80px;
-  height: 28px;
+.code .glass {
+  background: var(--djinn-glass-clear);
+  backdrop-filter: blur(1.5px);
+}
 
-  i {
-    position: absolute;
-    top: 0;
-    width: 28px;
-    height: 28px;
-    border: 2px solid #fff;
-    border-radius: 50%;
+/* Блик: свет медленно проходит по стеклу. Ничего не утверждает — это только материал. */
+.sheen {
+  position: absolute;
+  inset: -20%;
+  z-index: 1;
+  background: linear-gradient(115deg, transparent 38%, var(--djinn-sheen) 50%, transparent 62%);
+  transform: translateX(-60%);
+  animation: djinn-sheen 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes djinn-sheen {
+  0%,
+  15% {
+    transform: translateX(-60%);
   }
 
-  i:nth-child(1) {
-    left: 0;
-    background: #ffd37a;
+  65%,
+  100% {
+    transform: translateX(60%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheen {
+    display: none;
   }
 
-  i:nth-child(2) {
-    left: 17px;
-    background: #8fd3ff;
-  }
-
-  i:nth-child(3) {
-    left: 34px;
-    background: #ff9ac1;
-  }
-
-  i:nth-child(4) {
-    left: 51px;
-    background: #b6f0c0;
+  .glass {
+    transition: none;
   }
 }

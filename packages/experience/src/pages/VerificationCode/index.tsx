@@ -64,16 +64,13 @@ const VerificationCode = () => {
       heading="Введите код"
       pageTitle={`description.verify_${type}`}
       subheading={
-        type === SignInIdentifier.Email
-          ? 'Отправили 6-значный код на почту. Он действует 10 минут.'
-          : 'Отправили 6-значный код в SMS. Он действует 10 минут.'
+        <DjinnIdentifierChip
+          value={
+            type === SignInIdentifier.Phone ? formatPhoneNumberWithCountryCallingCode(value) : value
+          }
+        />
       }
     >
-      <DjinnIdentifierChip
-        value={
-          type === SignInIdentifier.Phone ? formatPhoneNumberWithCountryCallingCode(value) : value
-        }
-      />
       <VerificationCodeContainer
         flow={userFlow}
         identifier={cachedIdentifierInputValue}

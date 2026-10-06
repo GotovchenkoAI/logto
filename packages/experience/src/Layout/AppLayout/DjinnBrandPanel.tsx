@@ -1,82 +1,55 @@
+import classNames from 'classnames';
 import { useLocation } from 'react-router-dom';
+
+import cabinetDark from '@/shared/assets/djinn-cabinet-dark.png';
+import cabinetLight from '@/shared/assets/djinn-cabinet-light.png';
 
 import styles from './DjinnBrandPanel.module.scss';
 
 /**
- * Правая панель экрана входа: обещание продукта на градиенте.
+ * Правая половина экрана входа: кабинет за стеклом (docs/specs/2026-10-06-login-screen-design.md
+ * в репозитории продукта).
  *
- * Показывается только в полноэкранном редиректе. В попапе и на узком экране
- * панели нет — там ценность несёт сама форма, а не декорация.
+ * Под стеклом — снимок настоящего кабинета первого входа: ровно то, что человек увидит после
+ * регистрации. Не скелет (читается как бесконечная загрузка), не чужие дела, без профиля. Ни
+ * одного утверждения о продукте, которое нельзя проверить: ни выдуманных чисел, ни имитации
+ * работы. Движение — только блик по стеклу.
  *
- * Панель знает шаг. На вводе почты она продаёт результат, на вводе кода —
- * подтверждает, что письмо ушло: в этот момент человек ждёт письма, и любое
- * другое сообщение рядом с полем кода отвлекает от единственного вопроса
- * «дошло ли».
+ * Панель знает шаг: на вводе почты — что даёт продукт; на вводе кода стекло проясняется, и
+ * кабинет читается — «осталось ввести код».
+ *
+ * Показывается только на полном экране; в попапе и на узком экране её прячет ширина
+ * (index.module.scss).
  */
 const DjinnBrandPanel = () => {
   const { pathname } = useLocation();
-  const isAwaitingCode = pathname.includes('verification-code');
+  const step = pathname.includes('verification-code') ? 'code' : 'email';
 
   return (
-    <aside className={styles.panel} aria-label="Готовченко">
-      <div className={styles.gradient}>
-        {isAwaitingCode ? (
-          <>
-            <p className={styles.headline}>Ещё пара секунд — и вы внутри</p>
-
-            <div className={styles.sent}>
-              <span aria-hidden="true" className={styles.sentIcon}>
-                <svg fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path
-                    d="M22 11.5V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h9"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                  />
-                  <path
-                    d="m2 7 8.97 5.7a1.94 1.94 0 0 0 2.06 0L22 7"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                  />
-                  <path
-                    d="m16 18 2 2 4-4"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                  />
-                </svg>
-              </span>
-              <span className={styles.sentText}>
-                <b>Письмо отправлено</b>
-                Код уже в вашем почтовом ящике
-              </span>
-            </div>
-          </>
+    <aside
+      aria-hidden="true"
+      className={classNames(styles.panel, step === 'code' && styles.code)}
+      data-step={step}
+    >
+      <div className={styles.stage}>
+        {step === 'code' ? (
+          <p className={styles.caption}>
+            Осталось ввести код&nbsp;— и вы в кабинете
+            <small>Письмо уже в пути. Код придёт за несколько секунд.</small>
+          </p>
         ) : (
-          <>
-            <p className={styles.headline}>Готовый документ — из пары фраз</p>
-
-            <div className={styles.composer} aria-hidden="true">
-              <span className={styles.placeholder}>Составь претензию застройщику по 214-ФЗ…</span>
-              <span className={styles.send} />
-            </div>
-
-            <div className={styles.proof}>
-              <span className={styles.avatars} aria-hidden="true">
-                <i />
-                <i />
-                <i />
-                <i />
-              </span>
-              12 400+ уже собрали документ
-            </div>
-          </>
+          <p className={styles.caption}>
+            Готовый документ из ваших материалов
+            <small>Загрузите файлы, опишите задачу&nbsp;— дальше мы.</small>
+          </p>
         )}
+        <div className={styles.cabinet}>
+          <img alt="" className={styles.light} src={cabinetLight} />
+          <img alt="" className={styles.dark} src={cabinetDark} />
+        </div>
       </div>
+      <div className={styles.glass} />
+      <span className={styles.sheen} />
     </aside>
   );
 };

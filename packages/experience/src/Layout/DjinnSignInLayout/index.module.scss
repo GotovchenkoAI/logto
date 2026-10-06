@@ -1,49 +1,51 @@
 /*
- * Шапка по кадрам «Экран · Вход» (заголовок 30px) и «Экран · Код (OTP)».
- * Цвета берутся из --djinn-* в AppLayout, поэтому шапка следует за темой.
+ * Левая колонка экрана входа (docs/specs/2026-10-06-login-screen-design.md в репозитории
+ * продукта). Цвета — из --djinn-* в AppLayout, поэтому колонка следует за темой.
+ *
+ * На полном экране знак прижат к верху колонки, строка согласия — к низу, а заголовок с
+ * формой стоят посередине по левому краю. Поля колонки — `--djinn-gutter` из AppLayout, поэтому
+ * знак, форма и строка согласия стоят на одной вертикали. На узком экране и в попапе всё
+ * идёт обычным потоком.
  */
 
-.header {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-  margin-bottom: 30px;
-}
-
-.logo {
+.brand {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
+  margin-bottom: 36px;
 }
 
 .mark {
   flex: none;
-  width: 24px;
-  height: 24px;
+  width: auto;
+  height: 20px;
 }
 
 .wordmark {
-  font-family: 'Inter Tight Variable', 'Inter Variable', system-ui, sans-serif;
-  font-size: 21px;
-  font-weight: 700;
-  letter-spacing: -0.4px;
+  font-family: 'Onest Variable', system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   color: var(--djinn-ink);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  margin-bottom: 22px;
 }
 
 .heading {
   margin: 0;
-  font-family: 'Inter Tight Variable', 'Inter Variable', system-ui, sans-serif;
-  font-size: 30px;
+  font-family: 'Onest Variable', system-ui, sans-serif;
+  font-size: 32px;
   font-weight: 600;
-  letter-spacing: -0.8px;
-  line-height: 1.2;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
   color: var(--djinn-ink);
-}
-
-/* Заголовок и подзаголовок стоят парой: разрыв между ними меньше, чем до логотипа. */
-.heading + .subheading {
-  margin-top: -12px;
+  text-wrap: balance;
 }
 
 .subheading {
@@ -51,55 +53,44 @@
   font-size: 15px;
   line-height: 1.5;
   color: var(--djinn-sec);
+
+  /* Строки подзаголовка разделены в тексте переводом строки — так и показываются. */
+  white-space: pre-line;
 }
 
-/* Обещание о данных: щит и текст в строку, по левому краю — это не сноска. */
-.privacy {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
+.foot {
   width: 100%;
-  margin: 18px 0 0;
+  margin: 28px 0 0;
   color: var(--djinn-muted);
   font-size: 12px;
   line-height: 1.5;
 }
 
-.shield {
-  flex: none;
-  width: 15px;
-  height: 15px;
+@media only screen and (min-width: 1025px) {
+  .brand {
+    position: absolute;
+    top: 48px;
+    left: var(--djinn-gutter);
+    margin: 0;
+  }
 
-  /* Иконка садится на первую строку текста, а не на верх блока. */
-  margin-top: 1px;
-}
-
-.legal {
-  width: 100%;
-  margin: 16px 0 0;
-  color: var(--djinn-muted);
-  font-size: 11.5px;
-  line-height: 1.5;
-  text-align: center;
+  .foot {
+    position: absolute;
+    bottom: 32px;
+    left: var(--djinn-gutter);
+    right: var(--djinn-gutter);
+    width: auto;
+    margin: 0;
+  }
 }
 
 @media only screen and (max-width: 620px) {
-  .header {
-    gap: 16px;
-    margin-bottom: 22px;
-  }
-
-  .wordmark {
-    font-size: 20px;
+  .brand {
+    margin-bottom: 28px;
   }
 
   .heading {
     font-size: 26px;
-    letter-spacing: -0.6px;
-  }
-
-  .heading + .subheading {
-    margin-top: -9px;
   }
 
   .subheading {

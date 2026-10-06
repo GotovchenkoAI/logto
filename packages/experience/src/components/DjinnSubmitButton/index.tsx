@@ -16,8 +16,7 @@ type Props = {
 };
 
 /**
- * Основная кнопка по кадрам «Экран · Вход» и «Экран · Код (OTP)»:
- * градиент 118°, стрелка, тень 18/y6.
+ * Основная кнопка экрана входа — главная кнопка кабинета: градиент 118°, без стрелки.
  *
  * Не использует `shared/components/Button`: тот принимает только ключ фразы, а
  * фразы приходят с сервера (`/api/.well-known/phrases`) из собранного образа
@@ -42,25 +41,7 @@ const DjinnSubmitButton = ({
     onClick={onClick}
   >
     <span className={styles.label}>{children}</span>
-    {isLoading ? (
-      <span aria-hidden="true" className={styles.spinner} />
-    ) : (
-      <svg
-        aria-hidden="true"
-        className={styles.arrow}
-        fill="none"
-        viewBox="0 0 17 17"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M3 8.5h11M9.5 4l4.5 4.5-4.5 4.5"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth="1.8"
-        />
-      </svg>
-    )}
+    {isLoading && <span aria-hidden="true" className={styles.spinner} />}
   </button>
 );
 

@@ -1,39 +1,16 @@
-.row {
-  margin-bottom: 20px;
-}
-
-/* Плашка адреса по кадру: радиус 10, поля 9/13, обводка 1. */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  max-width: 100%;
-  padding: 9px 13px;
-  border: 1px solid var(--djinn-divider);
-  border-radius: 10px;
-  background: var(--djinn-inset);
-}
-
-.icon {
-  flex: none;
-  width: 16px;
-  height: 16px;
-  color: var(--djinn-sec);
+/* Строка подзаголовка: адрес выделен чернилами, «Изменить» — ссылкой. */
+.line {
+  white-space: normal;
 }
 
 .value {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   color: var(--djinn-ink);
-  font-size: 14px;
   font-weight: 500;
+  overflow-wrap: anywhere;
 }
 
 .dot {
-  flex: none;
-  color: var(--djinn-dot);
+  color: var(--djinn-muted);
 }
 
 /*
@@ -48,15 +25,15 @@
   flex: none;
 
   /* Поля постоянные: появись они при наведении, строка бы дёргалась. */
-  margin: -5px -8px;
-  padding: 5px 8px;
+  margin: -3px -6px;
+  padding: 3px 6px;
   border: none;
   border-radius: 7px;
   background: transparent;
   color: var(--djinn-link);
   font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: inherit;
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 120ms ease;
 
