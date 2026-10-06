@@ -1,5 +1,19 @@
 # @logto/connector-google
 
+## 1.8.7
+
+### Patch Changes
+
+- @logto/connector-kit@5.1.1
+
+## 1.8.6
+
+### Patch Changes
+
+- 4963a55b4: upgrade jose from v5 to v6
+
+  These connectors now use jose 6, which runs on the Web Crypto API instead of Node's crypto module. Token signing and ID token verification behave exactly as before.
+
 ## 1.8.5
 
 ### Patch Changes

@@ -1,12 +1,10 @@
 type ActionsAvailability = {
   isCloud: boolean;
-  isDevFeaturesEnabled: boolean;
   actionsEnabled: boolean;
 };
 
 type ActionsQuotaData = {
   actionsEnabled?: boolean;
-  inlineHooksEnabled?: boolean;
 };
 
 type NormalizeActionsQuotaOptions = {
@@ -22,8 +20,7 @@ type NormalizeActionsQuotaOptions = {
 };
 
 /**
- * Drop the legacy `inlineHooksEnabled` key from a Cloud quota payload and return it with a
- * guaranteed `actionsEnabled` boolean.
+ * Return a Cloud quota payload with a guaranteed `actionsEnabled` boolean.
  */
 export const normalizeActionsQuota = <Quota extends ActionsQuotaData>(
   quota: Quota,
@@ -35,13 +32,8 @@ export const normalizeActionsQuota = <Quota extends ActionsQuotaData>(
     throw new TypeError('Cloud response is missing the Actions quota.');
   }
 
-  const { inlineHooksEnabled: _, ...rest } = quota;
-
-  return { ...rest, actionsEnabled };
+  return { ...quota, actionsEnabled };
 };
 
-export const isActionsEnabled = ({
-  isCloud,
-  isDevFeaturesEnabled,
-  actionsEnabled,
-}: ActionsAvailability) => isDevFeaturesEnabled && (!isCloud || actionsEnabled);
+export const isActionsEnabled = ({ isCloud, actionsEnabled }: ActionsAvailability) =>
+  !isCloud || actionsEnabled;

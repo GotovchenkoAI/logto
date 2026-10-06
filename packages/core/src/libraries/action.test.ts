@@ -16,6 +16,7 @@ import { createMockLogContext } from '#src/test-utils/koa-audit-log.js';
 import { actionMetricNames, type ActionTelemetryProperties } from './action-telemetry.js';
 import { getActionExecutionErrorPolicyDecision, ActionLibrary } from './action.js';
 import type { ActionExecutionErrorFallback, ActionExecutionErrorPolicyDecision } from './action.js';
+import type { CloudConnectionLibrary } from './cloud-connection.js';
 import type { LogtoConfigLibrary } from './logto-config.js';
 import type { SubscriptionLibrary } from './subscription.js';
 
@@ -47,11 +48,11 @@ const createLibrary = (tenantId = 'tenant_id') =>
   new ActionLibrary(
     tenantId,
     { getAction } as unknown as LogtoConfigLibrary,
-    { getSubscriptionData } as unknown as SubscriptionLibrary
+    { getSubscriptionData } as unknown as SubscriptionLibrary,
+    {} as CloudConnectionLibrary
   );
 
 const originalIsCloud = EnvSet.values.isCloud;
-const originalIsDevFeaturesEnabled = EnvSet.values.isDevFeaturesEnabled;
 
 const setIsCloud = (isCloud: boolean) => {
   // eslint-disable-next-line @silverhand/fp/no-mutation -- Toggle EnvSet for Cloud/local selection tests.
@@ -74,8 +75,6 @@ describe('ActionLibrary', () => {
       trackMetric,
       trackException: jest.fn(),
     } as unknown as NonNullable<typeof appInsights.client>;
-    // eslint-disable-next-line @silverhand/fp/no-mutation -- Toggle EnvSet for action runtime tests.
-    (EnvSet.values as { isDevFeaturesEnabled: boolean }).isDevFeaturesEnabled = true;
     getSubscriptionData.mockResolvedValue({
       quota: {
         actionsEnabled: true,
@@ -89,12 +88,9 @@ describe('ActionLibrary', () => {
     // eslint-disable-next-line @silverhand/fp/no-mutation -- Restore the shared AppInsights singleton.
     appInsights.client = originalAppInsightsClient;
     setIsCloud(originalIsCloud);
-    // eslint-disable-next-line @silverhand/fp/no-mutation -- Restore EnvSet after dev feature tests.
-    (EnvSet.values as { isDevFeaturesEnabled: boolean }).isDevFeaturesEnabled =
-      originalIsDevFeaturesEnabled;
   });
 
-  it('loads action config and runs the enabled script in the local VM', async () => {
+  it('loads action config and runs the enabled script on the local runner', async () => {
     const getEvent = jest.fn().mockResolvedValue({
       key: LogtoActionKey.PostSignIn,
       interactionEvent: 'SignIn',
@@ -482,23 +478,6 @@ describe('ActionLibrary', () => {
     });
   });
 
-  it('does not load or run actions when dev features are disabled', async () => {
-    // eslint-disable-next-line @silverhand/fp/no-mutation -- Toggle EnvSet for dev feature gate test.
-    (EnvSet.values as { isDevFeaturesEnabled: boolean }).isDevFeaturesEnabled = false;
-
-    await expect(
-      runAction({
-        key: LogtoActionKey.PostSignIn,
-        event: {},
-      })
-    ).resolves.toBeUndefined();
-
-    expect(getAction).not.toHaveBeenCalled();
-    expect(getSubscriptionData).not.toHaveBeenCalled();
-    expect(createLog).not.toHaveBeenCalled();
-    expect(trackMetric).not.toHaveBeenCalled();
-  });
-
   it('does not run disabled actions', async () => {
     getAction.mockResolvedValueOnce({
       enabled: false,
@@ -586,7 +565,7 @@ describe('ActionLibrary', () => {
       `,
     });
     const executeScript = jest.spyOn(library, 'executeScript');
-    const runScriptInLocalVm = jest.spyOn(ActionLibrary, 'runScriptInLocalVm');
+    const runScriptLocally = jest.spyOn(ActionLibrary, 'runScriptLocally');
     const runScriptRemotely = jest.spyOn(library, 'runScriptRemotely');
 
     await expect(
@@ -598,7 +577,7 @@ describe('ActionLibrary', () => {
 
     expect(getEvent).not.toHaveBeenCalled();
     expect(executeScript).not.toHaveBeenCalled();
-    expect(runScriptInLocalVm).not.toHaveBeenCalled();
+    expect(runScriptLocally).not.toHaveBeenCalled();
     expect(runScriptRemotely).not.toHaveBeenCalled();
     expect(getEvent).not.toHaveBeenCalled();
     expect(createLog).not.toHaveBeenCalled();
@@ -686,7 +665,7 @@ describe('ActionLibrary', () => {
     const executionError = new SensitiveExecutionError(
       `Action failed with ${password} ${script} ${environmentSecret}`
     );
-    jest.spyOn(ActionLibrary, 'runScriptInLocalVm').mockRejectedValueOnce(executionError);
+    jest.spyOn(ActionLibrary, 'runScriptLocally').mockRejectedValueOnce(executionError);
     getAction.mockResolvedValueOnce({
       enabled: true,
       onExecutionError: 'allow',

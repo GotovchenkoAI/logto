@@ -1,5 +1,17 @@
 # @logto/connector-aliyun-sms
 
+## 1.5.6
+
+### Patch Changes
+
+- @logto/connector-kit@5.1.1
+
+## 1.5.5
+
+### Patch Changes
+
+- b2b7e7316: treat Hong Kong phone numbers as overseas in the Aliyun SMS connector
+
 ## 1.5.4
 
 ### Patch Changes

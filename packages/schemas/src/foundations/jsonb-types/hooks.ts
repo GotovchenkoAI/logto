@@ -19,6 +19,7 @@ export enum InteractionHookEvent {
 // DataHookEvent
 export enum DataHookSchema {
   User = 'User',
+  TrustedDevice = 'TrustedDevice',
   Role = 'Role',
   Scope = 'Scope',
   Organization = 'Organization',
@@ -39,7 +40,7 @@ type BasicDataHookEvent = `${DataHookSchema}.${DataHookBasicMutationType}`;
 
 // Custom DataHook mutable schemas
 type CustomDataHookMutableSchema =
-  | `${DataHookSchema}.Data`
+  | `${Exclude<DataHookSchema, DataHookSchema.TrustedDevice>}.Data`
   | `${DataHookSchema.User}.SuspensionStatus`
   | `${DataHookSchema.Role}.Scopes`
   | `${DataHookSchema.Organization}.Membership`
@@ -48,7 +49,10 @@ type CustomDataHookMutableSchema =
 type DataHookPropertyUpdateEvent =
   `${CustomDataHookMutableSchema}.${DataHookDetailMutationType.Updated}`;
 
-export type ExceptionHookEvent = 'Identifier.Lockout' | 'Message.RateLimited';
+export type ExceptionHookEvent =
+  | 'Identifier.Lockout'
+  | 'Message.RateLimited'
+  | 'Grant.LimitExceeded';
 
 export type DataHookEvent = BasicDataHookEvent | DataHookPropertyUpdateEvent;
 
@@ -62,6 +66,8 @@ export const hookEvents = Object.freeze([
   'User.Deleted',
   'User.Data.Updated',
   'User.SuspensionStatus.Updated',
+  'TrustedDevice.Created',
+  'TrustedDevice.Deleted',
   'Role.Created',
   'Role.Deleted',
   'Role.Data.Updated',
@@ -82,6 +88,7 @@ export const hookEvents = Object.freeze([
   'OrganizationScope.Data.Updated',
   'Identifier.Lockout',
   'Message.RateLimited',
+  'Grant.LimitExceeded',
 ] as const satisfies Array<InteractionHookEvent | DataHookEvent | ExceptionHookEvent>);
 
 /** The type of hook event values that can be registered. */
