@@ -7,11 +7,12 @@ copy.
 ## Upstream baseline
 
 - repository: `https://github.com/logto-io/logto`
-- branch: `master`, unreleased (the last tag it carries is `v1.41.0`)
-- commit: `defa67c4c5bc22b2f9c3d57b4408c8334665a5d6`
+- release tag: `v1.44.0`
+- commit: `79e9e3b0d9f505260d09c80d8a015e56fbc0ec01`
+- Djinn branch: `djinn/v1.44.0-experience` (the publish workflow builds on push to it)
 
 The production image must be built from this repository and pinned by digest. Upgrades merge a
-fresh upstream point, keep the Experience-only patch on top, and rerun the Djinn one-code browser
+fresh upstream release tag, keep the Experience-only patch on top, and rerun the Djinn one-code browser
 contract before promotion.
 
 The release build uses the upstream `Dockerfile` and produces a self-contained image: every
@@ -58,8 +59,8 @@ Upstream is merged into this branch rather than replayed onto it, so the diff ag
 exactly the Djinn patch:
 
 ```bash
-git fetch upstream master
-git diff --name-only upstream/master
+git fetch upstream --tags
+git diff --name-only v1.44.0
 ```
 
 Everything that lists should be Experience, Russian phrases, or the one core file named above.

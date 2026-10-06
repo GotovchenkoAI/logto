@@ -3,7 +3,7 @@ name: Publish Djinn Logto Experience
 on:
   push:
     branches:
-      - djinn/v1.41.0-experience
+      - djinn/v1.44.0-experience
   workflow_dispatch:
 
 concurrency:
