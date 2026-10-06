@@ -59,24 +59,11 @@
 }
 
 .foot {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
   width: 100%;
-  max-width: 380px;
   margin: 28px 0 0;
   color: var(--djinn-muted);
   font-size: 12px;
-  line-height: 1.5;
-
-  p {
-    margin: 0;
-  }
-}
-
-/* Фраза согласия: строки ровные по длине, ссылка внутри себя не рвётся. */
-.consent {
-  text-wrap: balance;
+  line-height: 1.6;
 
   a {
     color: var(--djinn-sec);
@@ -94,21 +81,36 @@
   }
 }
 
+/*
+ * Пара ссылок — один строчный блок: не помещается в первую строку — переносится целиком,
+ * а не «условия использования» в конце первой и «политику» во второй. Уже окна — блок
+ * сам разбивается между ссылками (max-width), ссылка внутри себя не рвётся никогда.
+ */
+.documents {
+  display: inline-block;
+  max-width: 100%;
+}
+
 @media only screen and (min-width: 1025px) {
-  .brand {
+  /*
+   * Знак и нижняя строка стоят на вертикали формы: колонка формы (--max-width, 400px)
+   * центрирована в поле левой половины, и привязка к полю уводила их на ~60px левее неё.
+   */
+  .brand,
+  .foot {
     position: absolute;
-    top: 48px;
-    left: var(--djinn-gutter);
+    left: 50%;
+    width: min(var(--max-width, 400px), calc(100% - 2 * var(--djinn-gutter)));
     margin: 0;
+    transform: translateX(-50%);
+  }
+
+  .brand {
+    top: 48px;
   }
 
   .foot {
-    position: absolute;
     bottom: 32px;
-    left: var(--djinn-gutter);
-    right: var(--djinn-gutter);
-    width: auto;
-    margin: 0;
   }
 }
 

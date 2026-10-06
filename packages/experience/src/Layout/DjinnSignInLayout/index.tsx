@@ -22,15 +22,14 @@ type Props = {
  * заголовок из фраз Logto, а нам нужна марка продукта и свой текст. Марка намеренно не берётся
  * из админки — она не должна зависеть от того, загрузил ли кто-то картинку в консоль.
  *
- * Внизу, под формой, а не в ней: согласие с документами и место хранения данных — тихий
- * подвал, который не спорит с формой. Адреса документов — из штатных полей sign-in experience
+ * Внизу, под формой, а не в ней: место хранения данных и согласие с документами — тихий
+ * подвал в две строки, который не спорит с формой. Пара ссылок переносится одним блоком:
+ * «условия использования и политику конфиденциальности» уходят на вторую строку целиком. Адреса документов — из штатных полей sign-in experience
  * (`termsOfUseUrl`, `privacyPolicyUrl`): у каждого стенда свой адрес кабинета. Без адресов
  * фразы о согласии нет — ссылаться не на что.
  *
  * Ссылки подчёркнуты: без этого «условия» в тихой строке не читаются как ссылка. Внутри ссылки
- * строка не рвётся, а строки фразы выравниваются по длине — на телефоне «политику
- * конфиденциальности» переносится целиком. Открываются в новой вкладке: уход со страницы
- * сбросил бы начатый вход.
+ * строка не рвётся. Открываются в новой вкладке: уход со страницы сбросил бы начатый вход.
  */
 const DjinnSignInLayout = ({ children, pageTitle, heading, subheading }: Props) => {
   const { termsOfUseUrl, privacyPolicyUrl } = useTerms();
@@ -52,22 +51,26 @@ const DjinnSignInLayout = ({ children, pageTitle, heading, subheading }: Props) 
         <div className={styles.subheading}>{subheading}</div>
       </header>
       {children}
-      <div className={styles.foot}>
-        {termsOfUseUrl && privacyPolicyUrl && (
-          <p className={styles.consent}>
-            Продолжая, вы&nbsp;принимаете{' '}
-            <a href={termsOfUseUrl} target="_blank" rel="noopener noreferrer">
-              условия использования
-            </a>{' '}
-            и&nbsp;
-            <a href={privacyPolicyUrl} target="_blank" rel="noopener noreferrer">
-              политику конфиденциальности
-            </a>
-            .
-          </p>
+      <p className={styles.foot}>
+        Данные хранятся в России
+        {termsOfUseUrl && privacyPolicyUrl ? (
+          <>
+            {' · '}Продолжая, вы&nbsp;принимаете{' '}
+            <span className={styles.documents}>
+              <a href={termsOfUseUrl} target="_blank" rel="noopener noreferrer">
+                условия использования
+              </a>{' '}
+              и&nbsp;
+              <a href={privacyPolicyUrl} target="_blank" rel="noopener noreferrer">
+                политику конфиденциальности
+              </a>
+              .
+            </span>
+          </>
+        ) : (
+          '.'
         )}
-        <p className={styles.residence}>Данные хранятся в России.</p>
-      </div>
+      </p>
     </FirstScreenLayout>
   );
 };
