@@ -142,6 +142,13 @@
   --color-brand-loading: #7b61ffcc;
   position: relative;
   flex: 1;
+
+  /*
+   * Колонка — flex-элемент строки: без нуля её min-width равен min-content, а ячейки кода
+   * (<input> без явной ширины) дают его до --max-width 400px. В окне уже 468px колонка
+   * распиралась шире окна, и ряд клеток обрезался по краям.
+   */
+  min-width: 0;
   align-items: flex-start;
   justify-content: center;
   padding: 96px var(--djinn-gutter);
