@@ -33,6 +33,9 @@ const DjinnSubmitButton = ({
   onClick,
 }: Props) => (
   <button
+    // Тот же якорь, что у апстримной `Button`: по `button[name=submit]` форму
+    // находят интеграционные тесты Logto и наш браузерный контракт входа.
+    name="submit"
     className={classNames(styles.button, className)}
     disabled={isDisabled ?? isLoading}
     type={htmlType}
