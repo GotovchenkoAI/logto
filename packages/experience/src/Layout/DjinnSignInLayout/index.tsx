@@ -1,5 +1,5 @@
 import type { TFuncKey } from 'i18next';
-import { Fragment, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import FirstScreenLayout from '@/Layout/FirstScreenLayout';
 import useTerms from '@/hooks/use-terms';
@@ -22,17 +22,18 @@ type Props = {
  * заголовок из фраз Logto, а нам нужна марка продукта и свой текст. Марка намеренно не берётся
  * из админки — она не должна зависеть от того, загрузил ли кто-то картинку в консоль.
  *
- * Нижняя строка — место хранения данных и две ссылки: условия и политика. Адреса берутся из
- * штатных полей sign-in experience (`termsOfUseUrl`, `privacyPolicyUrl`): у каждого стенда свой
- * адрес кабинета, и вшивать его в образ нельзя. Нет адреса — нет и ссылки. Ссылки открываются
- * в новой вкладке: уход со страницы входа сбросил бы начатый вход.
+ * Внизу, под формой, а не в ней: согласие с документами и место хранения данных — тихий
+ * подвал, который не спорит с формой. Адреса документов — из штатных полей sign-in experience
+ * (`termsOfUseUrl`, `privacyPolicyUrl`): у каждого стенда свой адрес кабинета. Без адресов
+ * фразы о согласии нет — ссылаться не на что.
+ *
+ * Ссылки подчёркнуты: без этого «условия» в тихой строке не читаются как ссылка. Внутри ссылки
+ * строка не рвётся, а строки фразы выравниваются по длине — на телефоне «политику
+ * конфиденциальности» переносится целиком. Открываются в новой вкладке: уход со страницы
+ * сбросил бы начатый вход.
  */
 const DjinnSignInLayout = ({ children, pageTitle, heading, subheading }: Props) => {
   const { termsOfUseUrl, privacyPolicyUrl } = useTerms();
-  const links: Array<{ href: string; label: string }> = [
-    ...(termsOfUseUrl ? [{ href: termsOfUseUrl, label: 'Условия' }] : []),
-    ...(privacyPolicyUrl ? [{ href: privacyPolicyUrl, label: 'Конфиденциальность' }] : []),
-  ];
 
   return (
     <FirstScreenLayout pageMeta={{ titleKey: pageTitle }}>
@@ -51,17 +52,22 @@ const DjinnSignInLayout = ({ children, pageTitle, heading, subheading }: Props) 
         <div className={styles.subheading}>{subheading}</div>
       </header>
       {children}
-      <p className={styles.foot}>
-        Данные хранятся в России
-        {links.map(({ href, label }) => (
-          <Fragment key={href}>
-            {' · '}
-            <a className={styles.footLink} href={href} target="_blank" rel="noopener noreferrer">
-              {label}
+      <div className={styles.foot}>
+        {termsOfUseUrl && privacyPolicyUrl && (
+          <p className={styles.consent}>
+            Продолжая, вы&nbsp;принимаете{' '}
+            <a href={termsOfUseUrl} target="_blank" rel="noopener noreferrer">
+              условия использования
+            </a>{' '}
+            и&nbsp;
+            <a href={privacyPolicyUrl} target="_blank" rel="noopener noreferrer">
+              политику конфиденциальности
             </a>
-          </Fragment>
-        ))}
-      </p>
+            .
+          </p>
+        )}
+        <p className={styles.residence}>Данные хранятся в России.</p>
+      </div>
     </FirstScreenLayout>
   );
 };

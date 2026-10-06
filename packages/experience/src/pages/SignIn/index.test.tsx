@@ -91,8 +91,8 @@ describe('<SignIn />', () => {
       mockSignInExperienceSettings.socialConnectors.length
     );
 
-    expect(queryByText('Условия')).not.toBeNull();
-    expect(queryByText('Конфиденциальность')).not.toBeNull();
+    expect(queryByText('условия использования')).not.toBeNull();
+    expect(queryByText('политику конфиденциальности')).not.toBeNull();
   });
 
   /*
@@ -106,8 +106,8 @@ describe('<SignIn />', () => {
     });
 
     for (const [name, href] of [
-      ['Условия', 'https://cabinet.example/terms'],
-      ['Конфиденциальность', 'https://cabinet.example/privacy'],
+      ['условия использования', 'https://cabinet.example/terms'],
+      ['политику конфиденциальности', 'https://cabinet.example/privacy'],
     ] as const) {
       const link = getByRole('link', { name });
       expect(link.getAttribute('href')).toBe(href);
@@ -118,8 +118,8 @@ describe('<SignIn />', () => {
   test('без адресов в настройках ссылок нет', () => {
     const { queryByRole } = renderSignIn({ termsOfUseUrl: null, privacyPolicyUrl: null });
 
-    expect(queryByRole('link', { name: 'Условия' })).toBeNull();
-    expect(queryByRole('link', { name: 'Конфиденциальность' })).toBeNull();
+    expect(queryByRole('link', { name: 'условия использования' })).toBeNull();
+    expect(queryByRole('link', { name: 'политику конфиденциальности' })).toBeNull();
   });
 
   test('does not expose a separate create-account entry in the unified email flow', () => {

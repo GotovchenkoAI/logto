@@ -59,23 +59,38 @@
 }
 
 .foot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   width: 100%;
+  max-width: 380px;
   margin: 28px 0 0;
   color: var(--djinn-muted);
   font-size: 12px;
   line-height: 1.5;
+
+  p {
+    margin: 0;
+  }
 }
 
-/* Ссылка тихая, как сама строка: подчёркивание проявляется под курсором и в фокусе. */
-.footLink {
-  color: var(--djinn-sec);
-  text-decoration: none;
-  transition: color 160ms ease;
+/* Фраза согласия: строки ровные по длине, ссылка внутри себя не рвётся. */
+.consent {
+  text-wrap: balance;
 
-  &:hover,
-  &:focus-visible {
-    color: var(--djinn-link);
+  a {
+    color: var(--djinn-sec);
     text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, currentcolor 35%, transparent);
+    text-underline-offset: 2px;
+    white-space: nowrap;
+    transition: color 160ms ease, text-decoration-color 160ms ease;
+
+    &:hover,
+    &:focus-visible {
+      color: var(--djinn-link);
+      text-decoration-color: currentcolor;
+    }
   }
 }
 
