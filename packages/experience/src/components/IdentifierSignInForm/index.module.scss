@@ -87,6 +87,15 @@
   font-size: 16px;
   line-height: 20px;
 
+  /*
+   * Фокус показывает кольцо всего поля (`.djinnField:focus-within`). Глобальное
+   * `:focus-visible` из normalized.scss иначе обводит само поле ввода второй
+   * рамкой — внутри поля видны две вертикальные черты.
+   */
+  &:focus-visible {
+    outline: none;
+  }
+
   /* Пустое поле без фокуса: подпись стоит по центру, значения нет — отступы не нужны. */
   &:not(:focus):placeholder-shown {
     padding: 0;

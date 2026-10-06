@@ -78,7 +78,8 @@
     position: absolute;
     bottom: 32px;
     left: var(--djinn-gutter);
-    right: var(--djinn-gutter);
+    /* Тихая строка — одна линия на десктопе: правый отступ меньше поля колонки. */
+    right: 24px;
     width: auto;
     margin: 0;
   }
