@@ -42,7 +42,8 @@ const sign_in_exp = {
     hide_logto_branding: '隱藏 Logto 品牌',
     hide_logto_branding_description:
       '移除「Powered by Logto」。以乾淨、專業的登入體驗突顯你的品牌。',
-    hide_logto_branding_oss_note: '此功能原生支援於 <a>Logto Cloud</a>。',
+    hide_logto_branding_oss_note:
+      '此功能可在 <a>Logto Cloud</a> 或<selfHosted>自託管方案</selfHosted>中使用。',
   },
   branding_uploads: {
     app_logo: {
@@ -92,7 +93,7 @@ const sign_in_exp = {
       '上傳壓縮包 (.zip) 以用自己的代碼替換 Logto 預建的 UI。<a>了解更多</a>',
     bring_your_ui_oss_description: '用你的代碼自訂登入 UI。',
     bring_your_ui_oss_card_description:
-      '將你的自訂登入 UI 直接上傳到 <a>Logto Cloud</a>。無需 fork 和重新部署。',
+      '自訂 UI 上傳功能可在 <a>Logto Cloud</a> 或<selfHosted>自託管方案</selfHosted>中使用。無需 fork 和重新部署。',
     bring_your_ui_oss_try_cloud: '試用 Cloud',
     preview_with_bring_your_ui_description:
       '你的自定義 UI 資源已成功上傳，現在正在提供服務。因此，內建預覽窗口已被禁用。\n要測試你的個性化登錄 UI，請點擊“實時預覽”按鈕在新瀏覽器標籤頁中打開。',
@@ -106,8 +107,20 @@ const sign_in_exp = {
     csp_source_invalid_error:
       '請輸入有效的來源表達式。請使用 https:// URL；connect-src 亦支援 wss://。不支援 CSP 關鍵字和分號。',
     csp_source_duplicate_error: '此來源表達式已在列表中。',
+    coop_tip: '將你的自訂登入 UI 與跨來源視窗隔離。只會在提供自訂 UI 資源時套用。',
+    coop_unsafe_none: '未設定（無標頭）',
+    coop_warning:
+      '在彈出視窗中開啟登入頁並依賴 window.opener 的應用程式將無法正常運作。自訂 UI 開啟的彈出視窗在返回自訂 UI 時（例如社交登入回調）亦會失去 window.opener；使用 same-origin 時，彈出視窗一開啟就會失去它。',
   },
   account_center: {
+    recent_authentication: {
+      title: '最近一次身分驗證',
+      description:
+        '敏感帳號操作（例如修改密碼或關閉雙重驗證）要求使用者最近登入過，無論是在 Account Center 中操作，還是在呼叫 Account API 的應用程式中操作。此時間視窗定義了多久以內的登入仍視為最近登入。',
+      maximum_authentication_age_in_minutes: '最大身分驗證時長（分鐘）',
+      maximum_authentication_age_in_minutes_tip:
+        '登入在多長時間內仍視為對敏感操作足夠新。用戶端仍可透過 `max_age` 參數要求更短的時間視窗。',
+    },
     title: '帳戶中心',
     description: '使用 Logto API 自訂你的帳戶中心流程。',
     enable_account_api: '啟用帳戶中心和 Account API',
@@ -129,6 +142,8 @@ const sign_in_exp = {
           title: '安全驗證',
           description:
             '在變更安全設定之前，使用者必須驗證身份以取得有效期 10 分鐘的驗證紀錄 ID。要啟用驗證方式（電郵、手機、密碼），請將下方的 Account API 權限設定為<strong>唯讀</strong>（最低要求）或<strong>可編輯</strong>，以便系統偵測使用者是否已配置。<a>了解更多</a>',
+          description_step_up:
+            '變更安全設定前，內置 Account Center 要求使用者最近登入過。如果目前登入時間早於設定的最近一次身分驗證時間視窗，Account Center 會發起 OIDC step-up，並要求使用者驗證身分。要允許使用者在 Account Center 中查看或管理驗證方式（電郵、手機或密碼），請將下方對應的 Account API 權限設定為<strong>唯讀</strong>或<strong>可編輯</strong>。對於這些敏感操作，直接呼叫 Account API 的應用程式仍可使用驗證紀錄 ID。<a>了解更多</a>',
         },
         groups: {
           identifiers: {
@@ -139,6 +154,9 @@ const sign_in_exp = {
           },
           session_management: {
             title: '會話管理',
+          },
+          developer_settings: {
+            title: '開發者設定',
           },
         },
       },
@@ -181,6 +199,9 @@ const sign_in_exp = {
       custom_data_description: '控制對儲存在使用者上的自訂 JSON 資料的存取權。',
       sessions: '會話',
       trusted_devices: '受信任裝置',
+      personal_access_tokens: '個人存取權杖',
+      personal_access_tokens_description:
+        '啟用後，用戶可以建立長期有效的個人存取權杖；這些權杖在登出和重設密碼後仍然有效，並且可被任何啟用了權杖交換的第一方應用程式兌換為存取權杖。',
     },
     profile_fields: {
       title: '預構建帳戶中心的檔案欄位',
@@ -215,9 +236,9 @@ const sign_in_exp = {
       flows_title: '整合開箱即用的安全設置流程',
       single_task_flows_title: '整合開箱即用的單一資料更新流程',
       flows_description:
-        '結合你的域名與路徑形成你的帳戶設置 URL（例如，https://auth.foo.com/account/email）。可以選擇性地添加 `redirect=` 在成功更新後返回用戶至你的應用程式，添加 `show_success=true` 以保持成功頁面可見，添加 `ui_locales=` 以覆蓋預設語言，或添加 `identifier=` 以預填識別碼輸入欄位。',
+        '結合你的域名與路徑形成你的帳戶設置 URL（例如，https://auth.foo.com/account/email）。可以選擇性地添加 `redirect=` 在成功更新後返回用戶至你的應用程式，添加 `show_success=true` 以保持成功頁面可見，添加 `ui_locales=` 以覆蓋預設語言，添加 `login_hint=` 以在登入頁面預填識別碼，或添加 `identifier=` 以在電郵、電話或用戶名稱路徑中預填新的值。',
       single_task_flows_description:
-        '結合你的域名與路徑形成你的個人資料更新 URL（例如，https://auth.foo.com/account/profile）。可以選擇性地添加 `redirect=` 在成功更新後返回用戶至你的應用程式，或添加 `ui_locales=` 以覆蓋預設語言。',
+        '直接將用戶導向特定流程（例如，電郵綁定）。可以選擇性地添加 `redirect=` 在成功更新後返回用戶至你的應用程式，添加 `show_success=true` 以保持成功頁面可見，添加 `ui_locales=` 以覆蓋預設語言，添加 `login_hint=` 以在登入頁面預填識別碼，或添加 `identifier=` 以在電郵、電話或用戶名稱路徑中預填新的值。',
       tooltips: {
         email: '更新你的主電郵地址',
         phone: '更新你的主電話號碼',

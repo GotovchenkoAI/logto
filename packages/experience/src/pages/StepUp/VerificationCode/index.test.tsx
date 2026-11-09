@@ -91,6 +91,8 @@ const userInteractionContext = (
   verificationIdsMap,
   hasBoundPasskey: false,
   setHasBoundPasskey: noop,
+  hasEnteredPassword: () => false,
+  setHasEnteredPassword: noop,
   clearInteractionContextSessionStorage: noop,
 });
 
@@ -109,6 +111,7 @@ const renderPage = ({
       <StepUpContext.Provider
         value={{
           authenticationContext: createAuthenticationContext(),
+          isPureStepUp: true,
           isLoading: false,
           isLoaded: true,
           load: mockLoad,

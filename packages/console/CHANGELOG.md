@@ -1,5 +1,64 @@
 # Change Log
 
+## 1.43.0
+
+### Minor Changes
+
+- c738bda: add a Cross-Origin-Opener-Policy setting for Bring your UI sign-in pages
+
+  Tenants with Bring your UI can choose `same-origin-allow-popups` or `same-origin` under Sign-in experience > Branding > Bring your UI, or set `crossOriginOpenerPolicy` with the sign-in experience Management API. The header is sent on the hosted sign-in pages while custom UI assets are served. The default, `unsafe-none`, sends no header, so apps that open the sign-in page in a popup keep working.
+
+- e8c954a: create self-service personal access tokens in Account Center
+
+  Users can create, rename, and revoke personal access tokens on the Security page of Account Center when the tenant enables the personal access token field. Each token is shown only once at creation and expires within 365 days. The same operations are available through the Account API under `/api/my-account/personal-access-tokens`.
+
+- 4c2822c: support GeeTest as a CAPTCHA provider
+
+  [GeeTest](https://www.geetest.com) CAPTCHA v4 adds an adaptive CAPTCHA service with localized challenges, which suits sign-in experiences targeting mainland China where Google reCAPTCHA is often unreachable.
+
+  To use it, create a CAPTCHA v4 event in the GeeTest dashboard, then go to Console > Security > CAPTCHA and add GeeTest with its CAPTCHA ID and CAPTCHA key. The same configuration is available through the `PUT /api/captcha-provider` Management API with `type: "Geetest"`.
+
+  While GeeTest is the CAPTCHA provider, the sign-in page's Content Security Policy allows GeeTest's SDK, API, and static hosts, which the widget loads the challenge from.
+
+- bdd4d5a: configure static attributes for SAML applications in Console
+
+  The attribute mapping tab of a SAML application now has a "Static attributes" section, where you can add fixed attribute names and values that are sent in every assertion alongside the mapped user attributes.
+
+- d65a8dc: support OIDC step-up authentication for Account Center and developer applications
+
+  Clients can request `acr_values` and `max_age` and receive `acr`, `amr`, and `auth_time` in ID tokens, access tokens, and introspection responses. The built-in Account Center now authorizes sensitive Account API operations with a fresh first-party `urn:logto:acr:1fa` access token instead of a separate verification record, and the legacy permission-verification runtime is removed.
+
+- 4dc1d1b: allow admins to require individual users to set up MFA, preventing those users from skipping the setup flow
+
+  Set `mfa.required` to `true` through the Management API, or turn on "Require MFA setup" on the user details page in Console. The user must bind MFA on their next sign-in and cannot skip it, regardless of the organization-level MFA policy.
+
+### Patch Changes
+
+- aadf40c: fix the organization selector in application access control rules showing unfiltered results when searching for an organization
+- cec1c1a: fix manual unlock not clearing active security verification lockouts
+
+  Sentinel activity deletion now also removes active blocked decisions older than one hour, so manually unlocking a user works when the lockout duration exceeds 60 minutes. The manual unlock dialog and API documentation now mention user IDs and security verification lockouts.
+
+- ac32be2: show full API resource names and add tooltips for truncated permission and resource names when assigning role permissions
+
+## 1.42.0
+
+### Minor Changes
+
+- 861d5d7: support license-based entitlements for self-hosted deployments
+
+  Install and replace a license in Console under Tenant settings → License or through the Management API. View its plan, environment, expiration, and refresh status, with weekly refresh and a 30-day grace period before returning to OSS defaults.
+
+  View self-hosted licenses and retrieve production and non-production keys from your account in Logto Cloud Console, without creating a Cloud tenant.
+
+  Licensed deployments can hide Logto branding, upload a custom sign-in UI using their own storage, customize its CSP, increase the SAML application limit, require Console MFA, and invite Console members.
+
+### Patch Changes
+
+- a67d190: fix Console permission pickers timing out on tenants with many Management API resources
+
+  `GET /api/resources` now accepts an `excludeManagementApis` query parameter that filters out Logto Management API resources in the database. The Console permission pickers for third-party apps, dynamic apps, organization roles, and user roles use it instead of loading every resource and filtering in the browser.
+
 ## 1.41.0
 
 ### Minor Changes

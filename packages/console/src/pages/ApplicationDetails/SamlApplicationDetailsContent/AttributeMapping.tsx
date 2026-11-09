@@ -1,7 +1,7 @@
 import { type UserClaim, userClaimsList } from '@logto/core-kit';
 import { type SamlApplicationResponse, samlAttributeMappingKeys } from '@logto/schemas';
 import { conditionalArray } from '@silverhand/essentials';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
 
@@ -15,11 +15,18 @@ import IconButton from '@/ds-components/IconButton';
 import Select from '@/ds-components/Select';
 import TextInput from '@/ds-components/TextInput';
 import useApi from '@/hooks/use-api';
+import useCurrentTenantScopes from '@/hooks/use-current-tenant-scopes';
 import useDocumentationUrl from '@/hooks/use-documentation-url';
 import { trySubmitSafe } from '@/utils/form';
 
 import styles from './AttributeMapping.module.scss';
-import { camelCaseToSentenceCase } from './utils';
+import StaticAttributesField from './StaticAttributesField';
+import {
+  camelCaseToSentenceCase,
+  parseFormDataToStaticAttributes,
+  parseStaticAttributesToFormData,
+  type StaticAttributeFormRow,
+} from './utils';
 
 const defaultFormValue: Array<[UserClaim | 'sub' | '', string]> = [['sub', '']];
 
@@ -34,6 +41,7 @@ type Props = {
  */
 type FormData = {
   attributeMapping: Array<[key: UserClaim | 'sub' | '', value: string]>;
+  staticAttributes: StaticAttributeFormRow[];
 };
 
 const keyPrefix = 'attributeMapping';
@@ -50,11 +58,23 @@ const getOrderedAttributeMapping = (
 };
 
 function AttributeMapping({ data, mutateApplication }: Props) {
-  const { id, attributeMapping } = data;
+  const { id, attributeMapping, staticAttributes } = data;
   const { t } = useTranslation(undefined, { keyPrefix: 'admin_console' });
+  const {
+    access: { isReadOnly },
+  } = useCurrentTenantScopes();
   const { getDocumentationUrl } = useDocumentationUrl();
   const api = useApi();
 
+  const formMethods = useForm<FormData>({
+    defaultValues: {
+      attributeMapping:
+        Object.keys(attributeMapping).length > 0
+          ? getOrderedAttributeMapping(attributeMapping)
+          : defaultFormValue,
+      staticAttributes: parseStaticAttributesToFormData(staticAttributes),
+    },
+  });
   const {
     watch,
     register,
@@ -63,14 +83,7 @@ function AttributeMapping({ data, mutateApplication }: Props) {
     control,
     formState: { isSubmitting, isDirty },
     setValue,
-  } = useForm<FormData>({
-    defaultValues: {
-      attributeMapping:
-        Object.keys(attributeMapping).length > 0
-          ? getOrderedAttributeMapping(attributeMapping)
-          : defaultFormValue,
-    },
-  });
+  } = formMethods;
 
   const formValues = watch('attributeMapping');
 
@@ -86,6 +99,7 @@ function AttributeMapping({ data, mutateApplication }: Props) {
             attributeMapping: Object.fromEntries(
               formData.attributeMapping.filter(([key, value]) => Boolean(key) && Boolean(value))
             ),
+            staticAttributes: parseFormDataToStaticAttributes(formData.staticAttributes),
           },
         })
         .json<SamlApplicationResponse>();
@@ -97,6 +111,7 @@ function AttributeMapping({ data, mutateApplication }: Props) {
           Object.keys(updatedData.attributeMapping).length > 0
             ? getOrderedAttributeMapping(updatedData.attributeMapping)
             : defaultFormValue,
+        staticAttributes: parseStaticAttributesToFormData(updatedData.staticAttributes),
       });
     })
   );
@@ -164,41 +179,48 @@ function AttributeMapping({ data, mutateApplication }: Props) {
                     <TextInput {...register(`${keyPrefix}.${index}.1`)} />
                   </td>
                   <td>
-                    <IconButton
-                      onClick={() => {
-                        const currentValues = [
-                          ...formValues.slice(0, index),
-                          ...formValues.slice(index + 1),
-                        ];
-                        setValue('attributeMapping', currentValues, {
-                          shouldDirty: true,
-                        });
-                      }}
-                    >
-                      <CircleMinus />
-                    </IconButton>
+                    {!isReadOnly && (
+                      <IconButton
+                        onClick={() => {
+                          const currentValues = [
+                            ...formValues.slice(0, index),
+                            ...formValues.slice(index + 1),
+                          ];
+                          setValue('attributeMapping', currentValues, {
+                            shouldDirty: true,
+                          });
+                        }}
+                      >
+                        <CircleMinus />
+                      </IconButton>
+                    )}
                   </td>
                 </tr>
               );
             })}
           </tbody>
         </table>
-        <Button
-          size="small"
-          type="text"
-          disabled={availableKeys.length === 0}
-          icon={<CirclePlus />}
-          title="application_details.saml_app_attribute_mapping.add_button"
-          onClick={() => {
-            const currentValues = [...formValues];
-            // eslint-disable-next-line @silverhand/fp/no-mutating-methods
-            currentValues.push(['', '']);
-            setValue('attributeMapping', currentValues, {
-              shouldDirty: true,
-            });
-          }}
-        />
+        {!isReadOnly && (
+          <Button
+            size="small"
+            type="text"
+            disabled={availableKeys.length === 0}
+            icon={<CirclePlus />}
+            title="application_details.saml_app_attribute_mapping.add_button"
+            onClick={() => {
+              const currentValues = [...formValues];
+              // eslint-disable-next-line @silverhand/fp/no-mutating-methods -- pushes to a fresh copy
+              currentValues.push(['', '']);
+              setValue('attributeMapping', currentValues, {
+                shouldDirty: true,
+              });
+            }}
+          />
+        )}
       </FormCard>
+      <FormProvider {...formMethods}>
+        <StaticAttributesField />
+      </FormProvider>
     </DetailsForm>
   );
 }

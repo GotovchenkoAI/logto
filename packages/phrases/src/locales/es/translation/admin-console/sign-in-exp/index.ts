@@ -47,7 +47,7 @@ const sign_in_exp = {
     hide_logto_branding_description:
       'Elimina "Powered by Logto". Destaca tu marca en exclusiva con una experiencia de inicio de sesión limpia y profesional.',
     hide_logto_branding_oss_note:
-      'Esta función está disponible de forma nativa en <a>Logto Cloud</a>.',
+      'Esta función está disponible en <a>Logto Cloud</a> o en los <selfHosted>planes autoalojados</selfHosted>.',
   },
   branding_uploads: {
     app_logo: {
@@ -98,7 +98,7 @@ const sign_in_exp = {
     bring_your_ui_oss_description:
       'Personaliza la interfaz de inicio de sesión con tu propio código.',
     bring_your_ui_oss_card_description:
-      'Sube tu interfaz de inicio de sesión personalizada directamente a <a>Logto Cloud</a>. No necesitas hacer un fork ni volver a desplegar.',
+      'La carga de una interfaz personalizada está disponible en <a>Logto Cloud</a> o en los <selfHosted>planes autoalojados</selfHosted>. No necesitas hacer un fork ni volver a desplegar.',
     bring_your_ui_oss_try_cloud: 'Probar Cloud',
     preview_with_bring_your_ui_description:
       'Tus activos de la interfaz de usuario personalizada se han subido con éxito y ahora se están sirviendo. En consecuencia, la ventana de vista previa incorporada se ha deshabilitado.\nPara probar tu interfaz de inicio de sesión personalizada, haz clic en el botón "Vista previa en vivo" para abrirla en una nueva pestaña del navegador.',
@@ -113,8 +113,21 @@ const sign_in_exp = {
     csp_source_invalid_error:
       'Introduce una expresión de origen válida. Usa URLs https://; connect-src también admite wss://. Las palabras clave de CSP y los puntos y coma no son compatibles.',
     csp_source_duplicate_error: 'Esta expresión de origen ya está en la lista.',
+    coop_tip:
+      'Aísla tu interfaz de inicio de sesión personalizada de las ventanas de otros orígenes. Solo se aplica cuando se sirven los activos de la UI personalizada.',
+    coop_unsafe_none: 'Sin configurar (sin encabezado)',
+    coop_warning:
+      'Las apps que abren la página de inicio de sesión en una ventana emergente y dependen de window.opener dejarán de funcionar. Las ventanas emergentes que abre tu UI personalizada también pierden window.opener cuando vuelven a tu UI personalizada, por ejemplo en un callback de inicio de sesión social. Con same-origin, lo pierden en cuanto se abren.',
   },
   account_center: {
+    recent_authentication: {
+      title: 'Autenticación reciente',
+      description:
+        'Las operaciones sensibles de la cuenta, como cambiar la contraseña o desactivar la verificación en dos pasos, requieren un inicio de sesión reciente, ya se realicen en Account Center o en una aplicación que llame a la Account API. Este intervalo define cuán reciente debe ser ese inicio de sesión.',
+      maximum_authentication_age_in_minutes: 'Antigüedad máxima de autenticación en minutos',
+      maximum_authentication_age_in_minutes_tip:
+        'Cuánto tiempo un inicio de sesión sigue siendo lo bastante reciente para operaciones sensibles. Un cliente aún puede solicitar un intervalo más corto con el parámetro `max_age`.',
+    },
     title: 'CENTRO DE CUENTAS',
     description: 'Personaliza los flujos de tu centro de cuentas usando las API de Logto.',
     enable_account_api: 'Habilitar el centro de cuentas y la Account API',
@@ -136,6 +149,8 @@ const sign_in_exp = {
           title: 'Verificación de seguridad',
           description:
             'Antes de cambiar la configuración de seguridad, los usuarios deben verificar su identidad para obtener un ID de registro de verificación válido durante 10 minutos. Para habilitar un método de verificación (correo electrónico, teléfono, contraseña), configure el permiso de la Account API en <strong>Solo lectura</strong> (mínimo) o <strong>Editar</strong> a continuación para que el sistema pueda detectar si el usuario lo tiene configurado. <a>Más información</a>',
+          description_step_up:
+            'Antes de cambiar la configuración de seguridad, el Account Center integrado requiere un inicio de sesión reciente. Si el inicio de sesión actual es anterior al intervalo configurado de autenticación reciente, Account Center inicia un OIDC step-up y solicita al usuario que verifique su identidad. Para que los usuarios puedan ver o gestionar un método de verificación (correo electrónico, teléfono o contraseña) en Account Center, configure el permiso correspondiente de la Account API en <strong>Solo lectura</strong> o <strong>Editar</strong> a continuación. Para estas operaciones sensibles, las aplicaciones que llaman directamente a la Account API aún pueden usar un ID de registro de verificación en su lugar. <a>Más información</a>',
         },
         groups: {
           identifiers: {
@@ -146,6 +161,9 @@ const sign_in_exp = {
           },
           session_management: {
             title: 'Gestión de sesiones',
+          },
+          developer_settings: {
+            title: 'Configuración para desarrolladores',
           },
         },
       },
@@ -192,6 +210,9 @@ const sign_in_exp = {
         'Controla el acceso a los datos JSON personalizados almacenados en el usuario.',
       sessions: 'Sesiones',
       trusted_devices: 'Dispositivos de confianza',
+      personal_access_tokens: 'Tokens de acceso personal',
+      personal_access_tokens_description:
+        'Al habilitar esto, los usuarios pueden crear tokens de acceso personal de larga duración que permanecen activos tras cerrar sesión y restablecer la contraseña, y que cualquier aplicación propia con intercambio de tokens habilitado puede canjear por tokens de acceso.',
     },
     profile_fields: {
       title: 'Campos de perfil para el centro de cuenta prediseñado',
@@ -230,9 +251,9 @@ const sign_in_exp = {
       flows_title: 'Integra flujos de configuración de seguridad predefinidos',
       single_task_flows_title: 'Integrar un flujo de tarea única listo para usar',
       flows_description:
-        'Combina tu dominio con la ruta para formar tu URL de configuración de cuenta (por ejemplo, https://auth.foo.com/account/email). Opcionalmente, agrega `redirect=` para devolver a los usuarios a tu aplicación después de una actualización exitosa, `show_success=true` para mantener visible la página de éxito, `ui_locales=` para anular el idioma predeterminado, o `identifier=` para prerellenar el campo de entrada del identificador.',
+        'Combina tu dominio con la ruta para formar tu URL de configuración de cuenta (por ejemplo, https://auth.foo.com/account/email). Opcionalmente, agrega `redirect=` para devolver a los usuarios a tu aplicación después de una actualización exitosa, `show_success=true` para mantener visible la página de éxito, `ui_locales=` para anular el idioma predeterminado, `login_hint=` para prerellenar el identificador en la página de inicio de sesión, o `identifier=` para prerellenar el nuevo valor en la ruta de correo electrónico, teléfono o nombre de usuario.',
       single_task_flows_description:
-        'Dirige a los usuarios directamente a un flujo específico (por ejemplo, vinculación de correo electrónico). Opcionalmente, agrega `redirect=` para devolver a los usuarios a tu aplicación después de una actualización exitosa, `show_success=true` para mantener visible la página de éxito, `ui_locales=` para anular el idioma predeterminado, o `identifier=` para prerellenar el campo de entrada del identificador.',
+        'Dirige a los usuarios directamente a un flujo específico (por ejemplo, vinculación de correo electrónico). Opcionalmente, agrega `redirect=` para devolver a los usuarios a tu aplicación después de una actualización exitosa, `show_success=true` para mantener visible la página de éxito, `ui_locales=` para anular el idioma predeterminado, `login_hint=` para prerellenar el identificador en la página de inicio de sesión, o `identifier=` para prerellenar el nuevo valor en la ruta de correo electrónico, teléfono o nombre de usuario.',
       tooltips: {
         email: 'Actualizar tu dirección de correo electrónico principal',
         phone: 'Actualizar tu número de teléfono principal',

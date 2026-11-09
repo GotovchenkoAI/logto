@@ -4,7 +4,6 @@ import { sql } from '@silverhand/slonik';
 
 import { buildDeleteByIdWithPool } from '#src/database/delete-by-id.js';
 import { buildInsertIntoWithPool } from '#src/database/insert-into.js';
-import { getTotalRowCountWithPool } from '#src/database/row-count.js';
 import RequestError from '#src/errors/RequestError/index.js';
 import assertThat from '#src/utils/assert-that.js';
 import { conditionalSql, convertToIdentifiers } from '#src/utils/sql.js';
@@ -16,10 +15,20 @@ export const createOneTimeTokenQueries = (pool: CommonQueryMethods) => {
     returning: true,
   });
 
-  const findTotalNumberOfOneTimeTokens = async () => getTotalRowCountWithPool(pool)(table);
+  const countOneTimeTokens = async (where: OneTimeTokenConditions) => {
+    // Postgres returns a bigint for count(*), which is then converted to a string by query library.
+    // We need to convert it to a number.
+    const { count } = await pool.one<{ count: string }>(sql`
+      select count(*)
+      from ${table}
+      ${buildConditionsSql(where)}
+    `);
+
+    return { count: Number(count) };
+  };
 
   const getOneTimeTokens = async (
-    where: Partial<Pick<OneTimeToken, 'id' | 'token' | 'email' | 'status'>>,
+    where: OneTimeTokenConditions,
     pagination?: { limit: number; offset: number }
   ) => pool.any<OneTimeToken>(buildFindEntitiesSql(where, pagination));
 
@@ -73,9 +82,33 @@ export const createOneTimeTokenQueries = (pool: CommonQueryMethods) => {
       returning *
     `);
 
+  const consumeActiveOneTimeToken = async (token: string) =>
+    pool.maybeOne<OneTimeToken>(sql`
+      update ${table}
+      set ${fields.status} = ${OneTimeTokenStatus.Consumed}
+      where ${fields.token} = ${token}
+      and ${fields.status} = ${OneTimeTokenStatus.Active}
+      returning *
+    `);
+
+  /**
+   * Revoke the active tokens issued for an email, compared case-insensitively, except the one with
+   * `exceptId` if given.
+   */
+  const revokeActiveOneTimeTokensByEmail = async (email: string, exceptId?: string) =>
+    pool.query(sql`
+      update ${table}
+      set ${fields.status} = ${OneTimeTokenStatus.Revoked}
+      where ${fields.status} = ${OneTimeTokenStatus.Active}
+      and lower(${fields.email}) = lower(${email})
+      ${conditionalSql(exceptId, (id) => sql`and ${fields.id} <> ${id}`)}
+    `);
+
   return {
+    consumeActiveOneTimeToken,
     deleteOneTimeTokenById,
-    findTotalNumberOfOneTimeTokens,
+    revokeActiveOneTimeTokensByEmail,
+    countOneTimeTokens,
     getOneTimeTokens,
     getOneTimeTokenById,
     getOneTimeTokenByToken,
@@ -85,12 +118,32 @@ export const createOneTimeTokenQueries = (pool: CommonQueryMethods) => {
   };
 };
 
-const buildFindEntitiesSql = (
-  where: Partial<Pick<OneTimeToken, 'id' | 'token' | 'email' | 'status'>>,
-  pagination?: { limit: number; offset: number }
-) => {
+type OneTimeTokenConditions = Partial<Pick<OneTimeToken, 'id' | 'token' | 'email' | 'status'>>;
+
+/**
+ * Shared by the list and the count queries so the reported total always describes the same rows as
+ * the list it accompanies.
+ */
+const buildConditionsSql = (where: OneTimeTokenConditions) => {
   const whereEntries = Object.entries(where).filter(([_, value]) => Boolean(value));
-  return sql`
+
+  return conditionalSql(
+    whereEntries.length > 0 && whereEntries,
+    (whereEntries) =>
+      sql`where ${sql.join(
+        whereEntries.map(([column, value]) =>
+          conditionalSql(value, (value) => sql`${sql.identifier([column])} = ${value}`)
+        ),
+        sql` and `
+      )}`
+  );
+};
+
+const buildFindEntitiesSql = (
+  where: OneTimeTokenConditions,
+  pagination?: { limit: number; offset: number }
+) =>
+  sql`
     select
       ${sql.join(
         Object.values(fields).filter((field) => field !== fields.status),
@@ -104,17 +157,7 @@ const buildFindEntitiesSql = (
         else ${fields.status}
       end as "status"
     from ${table}
-    ${conditionalSql(
-      whereEntries.length > 0 && whereEntries,
-      (whereEntries) =>
-        sql`where ${sql.join(
-          whereEntries.map(([column, value]) =>
-            conditionalSql(value, (value) => sql`${sql.identifier([column])} = ${value}`)
-          ),
-          sql` and `
-        )}`
-    )}
+    ${buildConditionsSql(where)}
     order by ${fields.createdAt} desc
     ${conditionalSql(pagination, ({ limit, offset }) => sql`limit ${limit} offset ${offset}`)}
   `;
-};

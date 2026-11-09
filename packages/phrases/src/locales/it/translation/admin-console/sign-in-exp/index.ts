@@ -46,7 +46,7 @@ const sign_in_exp = {
     hide_logto_branding_description:
       'Rimuovi "Powered by Logto". Metti in risalto solo il tuo brand con un\'esperienza di accesso pulita e professionale.',
     hide_logto_branding_oss_note:
-      'Questa funzione è disponibile in modo nativo su <a>Logto Cloud</a>.',
+      'Questa funzione è disponibile su <a>Logto Cloud</a> o nei <selfHosted>piani self-hosted</selfHosted>.',
   },
   branding_uploads: {
     app_logo: {
@@ -96,7 +96,7 @@ const sign_in_exp = {
       'Carica un pacchetto compresso (.zip) per sostituire la UI precaricata di Logto con il tuo codice. <a>Scopri di più</a>',
     bring_your_ui_oss_description: "Personalizza l'interfaccia di accesso con il tuo codice.",
     bring_your_ui_oss_card_description:
-      'Carica direttamente la tua interfaccia di accesso personalizzata su <a>Logto Cloud</a>. Non serve fare un fork o ridistribuire.',
+      'Il caricamento di una UI personalizzata è disponibile su <a>Logto Cloud</a> o nei <selfHosted>piani self-hosted</selfHosted>. Non serve fare un fork o ridistribuire.',
     bring_your_ui_oss_try_cloud: 'Prova Cloud',
     preview_with_bring_your_ui_description:
       'I tuoi asset della UI personalizzata sono stati caricati con successo e ora vengono serviti. Di conseguenza, la finestra di anteprima integrata è stata disabilitata.\nPer testare la tua UI di accesso personalizzata, fai clic sul pulsante "Live Preview" per aprirla in una nuova scheda del browser.',
@@ -111,8 +111,21 @@ const sign_in_exp = {
     csp_source_invalid_error:
       'Inserisci un’espressione di origine valida. Usa URL https://; connect-src supporta anche wss://. Le parole chiave CSP e i punti e virgola non sono supportati.',
     csp_source_duplicate_error: 'Questa espressione di origine è già presente nell’elenco.',
+    coop_tip:
+      'Isola la tua interfaccia di accesso personalizzata dalle finestre di altre origini. Applicato solo quando vengono serviti gli asset della UI personalizzata.',
+    coop_unsafe_none: 'Non impostato (nessun header)',
+    coop_warning:
+      'Le app che aprono la pagina di accesso in un popup e usano window.opener smetteranno di funzionare. Anche i popup aperti dalla tua UI personalizzata perdono window.opener quando tornano alla tua UI personalizzata, ad esempio su un callback di accesso social. Con same-origin, lo perdono non appena si aprono.',
   },
   account_center: {
+    recent_authentication: {
+      title: 'Autenticazione recente',
+      description:
+        "Le operazioni sensibili sull'account, come cambiare la password o disattivare la verifica a due passaggi, richiedono un accesso recente, sia in Account Center sia in un'app che chiama l'Account API. Questa finestra definisce quanto deve essere recente l'accesso.",
+      maximum_authentication_age_in_minutes: "Età massima dell'autenticazione in minuti",
+      maximum_authentication_age_in_minutes_tip:
+        'Per quanto tempo un accesso resta sufficientemente recente per le operazioni sensibili. Un client può comunque richiedere una finestra più breve con il parametro `max_age`.',
+    },
     title: 'CENTRO ACCOUNT',
     description: 'Personalizza i flussi del centro account con le API Logto.',
     enable_account_api: 'Abilita il centro account e l’Account API',
@@ -134,6 +147,8 @@ const sign_in_exp = {
           title: 'Verifica di sicurezza',
           description:
             "Prima di modificare le impostazioni di sicurezza, gli utenti devono verificare la propria identità per ottenere un ID di registrazione della verifica valido per 10 minuti. Per abilitare un metodo di verifica (email, telefono, password), imposta il permesso dell'Account API qui sotto su <strong>Sola lettura</strong> (minimo) o <strong>Modifica</strong> in modo che il sistema possa rilevare se l'utente lo ha configurato. <a>Scopri di più</a>",
+          description_step_up:
+            "Prima di modificare le impostazioni di sicurezza, l'Account Center integrato richiede un accesso recente. Se l'accesso corrente è più vecchio della finestra di autenticazione recente configurata, Account Center avvia un OIDC step-up e chiede all'utente di verificare la propria identità. Per consentire agli utenti di visualizzare o gestire un metodo di verifica (email, telefono o password) in Account Center, imposta l'autorizzazione Account API corrispondente qui sotto su <strong>Sola lettura</strong> o <strong>Modifica</strong>. Per queste operazioni sensibili, le app che chiamano direttamente l'Account API possono comunque usare un ID di registrazione della verifica. <a>Scopri di più</a>",
         },
         groups: {
           identifiers: {
@@ -144,6 +159,9 @@ const sign_in_exp = {
           },
           session_management: {
             title: 'Gestione sessioni',
+          },
+          developer_settings: {
+            title: 'Impostazioni sviluppatore',
           },
         },
       },
@@ -189,6 +207,9 @@ const sign_in_exp = {
         'Controlla l’accesso ai dati JSON personalizzati archiviati sull’utente.',
       sessions: 'Sessioni',
       trusted_devices: 'Dispositivi attendibili',
+      personal_access_tokens: 'Token di accesso personali',
+      personal_access_tokens_description:
+        'Abilitando questa opzione, gli utenti possono creare token di accesso personali di lunga durata che rimangono attivi anche dopo la disconnessione e la reimpostazione della password e possono essere scambiati con token di accesso da qualsiasi applicazione di prima parte con lo scambio di token abilitato.',
     },
     profile_fields: {
       title: 'Campi del profilo per il centro account predefinito',
@@ -227,9 +248,9 @@ const sign_in_exp = {
       flows_title: 'Integra i flussi di impostazione di sicurezza predefiniti',
       single_task_flows_title: 'Integra i flussi di aggiornamento profilo singolo predefiniti',
       flows_description:
-        "Combina il tuo dominio con il percorso per formare il tuo URL di impostazione dell'account (ad es., https://auth.foo.com/account/email). Opzionalmente aggiungi `redirect=` per riportare gli utenti alla tua app dopo un aggiornamento riuscito, `show_success=true` per mantenere visibile la pagina di successo, `ui_locales=` per sovrascrivere la lingua predefinita, o `identifier=` per precompilare il campo di input dell'identificatore.",
+        "Combina il tuo dominio con il percorso per formare il tuo URL di impostazione dell'account (ad es., https://auth.foo.com/account/email). Opzionalmente aggiungi `redirect=` per riportare gli utenti alla tua app dopo un aggiornamento riuscito, `show_success=true` per mantenere visibile la pagina di successo, `ui_locales=` per sovrascrivere la lingua predefinita, `login_hint=` per precompilare l'identificativo nella pagina di accesso, o `identifier=` per precompilare il nuovo valore sul percorso email, telefono o nome utente.",
       single_task_flows_description:
-        'Combina il tuo dominio con il percorso per formare il tuo URL di aggiornamento del profilo (ad es., https://auth.foo.com/account/profile). Opzionalmente aggiungi `redirect=` per riportare gli utenti alla tua app dopo un aggiornamento riuscito, o `ui_locales=` per sovrascrivere la lingua predefinita.',
+        "Indirizza gli utenti direttamente a un flusso specifico (ad es., collegamento email). Opzionalmente aggiungi `redirect=` per riportare gli utenti alla tua app dopo un aggiornamento riuscito, `show_success=true` per mantenere visibile la pagina di successo, `ui_locales=` per sovrascrivere la lingua predefinita, `login_hint=` per precompilare l'identificativo nella pagina di accesso, o `identifier=` per precompilare il nuovo valore sul percorso email, telefono o nome utente.",
       tooltips: {
         email: 'Aggiorna il tuo indirizzo email principale',
         phone: 'Aggiorna il tuo numero di telefono principale',

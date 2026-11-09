@@ -13,7 +13,7 @@ import { SubscriptionDataContext } from '@/contexts/SubscriptionDataProvider';
  * license, neither is available, as in plain OSS.
  */
 const useBrandingEntitlements = () => {
-  const { currentSubscriptionQuota, license } = useContext(SubscriptionDataContext);
+  const { currentSubscriptionQuota, licenseQuota } = useContext(SubscriptionDataContext);
 
   if (isCloud) {
     const { bringYourUiEnabled } = currentSubscriptionQuota;
@@ -23,17 +23,20 @@ const useBrandingEntitlements = () => {
       isHideLogtoBrandingAvailable: true,
       /** Whether the hide branding switch can be turned on. */
       isHideLogtoBrandingEnabled: bringYourUiEnabled,
-      /** Whether the Custom UI CSP form can be edited and is part of the payload. */
+      /**
+       * Whether the Custom UI CSP and Cross-Origin-Opener-Policy fields can be edited and are part
+       * of the payload.
+       */
       isCustomUiCspEnabled: bringYourUiEnabled,
     };
   }
 
-  const isHideLogtoBrandingEnabled = license?.quota.hideLogtoBranding ?? false;
+  const isHideLogtoBrandingEnabled = licenseQuota.hideLogtoBranding;
 
   return {
     isHideLogtoBrandingAvailable: isHideLogtoBrandingEnabled,
     isHideLogtoBrandingEnabled,
-    isCustomUiCspEnabled: license?.quota.bringYourUi ?? false,
+    isCustomUiCspEnabled: licenseQuota.bringYourUi,
   };
 };
 

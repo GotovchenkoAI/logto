@@ -1,5 +1,6 @@
 import {
   TenantRole,
+  Users,
   defaultTenantId,
   getTenantOrganizationId,
   getTenantRole,
@@ -52,8 +53,8 @@ export const createTenantMemberAuthorization = ({
       userId,
     });
 
-  // Not `auth.forbidden`: Console signs the user out on it, while a demoted admin should only see the
-  // request fail.
+  // Not `auth.forbidden`: Console signs the user out on it, while a removed member should only
+  // see the request fail.
   const assertAdmin = async (userId: string) => {
     assertThat(
       await isAdmin(userId),
@@ -61,5 +62,26 @@ export const createTenantMemberAuthorization = ({
     );
   };
 
-  return { isAdmin, assertAdmin };
+  /** Refuse to remove the only admin left. */
+  const assertNotLastAdmin = async (userId: string) => {
+    const [count, admins] = await organizations.relations.usersRoles.getEntities(
+      Users,
+      {
+        organizationId: tenantOrganizationId,
+        organizationRoleId: getTenantRole(TenantRole.Admin).id,
+      },
+      { limit: 2, offset: 0 }
+    );
+
+    assertThat(
+      count > 1 || admins[0]?.id !== userId,
+      new RequestError({
+        code: 'request.invalid_input',
+        status: 422,
+        details: 'You cannot remove the last admin.',
+      })
+    );
+  };
+
+  return { isAdmin, assertAdmin, assertNotLastAdmin };
 };
