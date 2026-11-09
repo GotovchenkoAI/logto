@@ -7,9 +7,10 @@ copy.
 ## Upstream baseline
 
 - repository: `https://github.com/logto-io/logto`
-- release tag: `v1.44.0`
-- commit: `79e9e3b0d9f505260d09c80d8a015e56fbc0ec01`
-- Djinn branch: `djinn/v1.44.0-experience` (the publish workflow builds on push to it)
+- release tag: `v1.46.0`
+- commit: `d179bf9d2d51104236a342b90c2841df66e4ba5b`
+- Djinn branch: `djinn/v1.46.0` (the publish workflow builds on push to any `djinn/v*` branch that carries it)
+- rollback source: `djinn/v1.44.0`
 
 The production image must be built from this repository and pinned by digest. Upgrades merge a
 fresh upstream release tag, keep the Experience-only patch on top, and rerun the Djinn one-code browser
@@ -60,7 +61,7 @@ exactly the Djinn patch:
 
 ```bash
 git fetch upstream --tags
-git diff --name-only v1.44.0
+git diff --name-only v1.46.0
 ```
 
 Everything that lists should be Experience, Russian phrases, or the one core file named above.
