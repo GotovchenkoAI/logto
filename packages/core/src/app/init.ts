@@ -40,7 +40,8 @@ export default async function initApp(app: Koa): Promise<void> {
         if (!EnvSet.values.isProduction && path.basename(requestPath).includes('.')) {
           return;
         }
-        consoleLog.plain(string);
+        // Djinn: the query can carry `one_time_token` and `login_hint`, so only the path is logged.
+        consoleLog.plain(string.replace(requestPath, () => requestPath.split('?')[0] ?? requestPath));
       },
     })(ctx, next);
 

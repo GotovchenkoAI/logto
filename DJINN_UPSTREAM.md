@@ -54,6 +54,10 @@ One change sits outside Experience on purpose: `packages/core/src/middleware/koa
 The sign-in screen is shown in a modal on our own site, and permission to frame it lives in a
 response header that core assembles; upstream has no configuration hook for it.
 
+A second one is `packages/core/src/app/init.ts`: the request log prints only the path, without the
+query. The query can carry `one_time_token` and `login_hint`, and that log goes to stdout; upstream
+has no configuration hook for it either.
+
 ## Reading the boundary
 
 Upstream is merged into this branch rather than replayed onto it, so the diff against upstream is
@@ -64,5 +68,5 @@ git fetch upstream --tags
 git diff --name-only v1.46.0
 ```
 
-Everything that lists should be Experience, Russian phrases, or the one core file named above.
+Everything that lists should be Experience, Russian phrases, or the two core files named above.
 Anything else is the fork quietly widening, and it will make the next upstream merge harder.
